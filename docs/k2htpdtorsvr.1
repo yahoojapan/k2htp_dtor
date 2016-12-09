@@ -1,0 +1,83 @@
+.TH k2htpdtorsvr "1" "February 2015" "k2htpdtorsvr" "K2HASH TRANSACTION"
+.SH NAME
+k2htpdtorsvr \- reciever server process for K2HASH TRANSACTION PLUGIN k2htpdtor.
+.SH SYNOPSIS
+.TP
+\fB2htpdtorsvr
+.SH DESCRIPTION
+.TP 2
+k2htpdtorsvr is a reciever for k2htpdtor K2HASH TRANSACTION PLUGIN. This program is expanding the recieve data from k2htpdtor plugin through chmpx. This makes local k2hash file and writes/deletes keys/subkeys/values which is recieved from chmpx server side process.
+.PP
+.SH OPTIONS
+.TP
+\fB\-h\fR
+display help
+.TP
+\fB\-ver\fR
+display version
+.TP
+\fB\-conf\fR [file path]
+specify configration file(.ini .yaml .json).
+.TP
+\fB\-json\fR [file path]
+specify configration json string.
+.TP
+\fB\-d\fR [ERR | WAN | INFO | DUMP]
+specify debugging level, chmpxbench displaies debugging message for itself.
+.TP
+\fB\-dl\fR
+specify sending message data length by byte. default value and minimum value are 64 bytes.
+.br
+.SH CONFIGRATION
+.TP 0
+The configration is formatted "INI" or YAML or JSON file, and you can use JSON string.
+.TP 2
+Following keys in configration:
+.IP K2HTPDTORSVR([K2HTPDTORSVR]) 20
+This program configuration section.
+.br
+.BR
+.br
+.IP OUTPUTFILE 20
+output file path
+.IP PLUGIN 20
+plugin program which is called by this program at each receiving transaction data.
+.IP K2HTYPE 20
+k2hash type when using k2hash. you can specify MEMORY(MEM, M) or FILE(F) or TEMPORARY(TEMP, T).
+.IP K2HFILE 20
+k2hash file path when using k2hash file type.
+.IP K2HFULLMAP 20
+full mapping mode for k2hash mode when using k2hash
+.IP K2HINIT 20
+flag for initializing k2hash at starting when using k2hash
+.IP K2HMASKBIT 20
+initial mask bit count for k2hash when using k2hash
+.IP K2HCMASKBIT 20
+initial cmask bit count for k2hash when using k2hash
+.IP K2HMAXELE 20
+initial element count for k2hash when using k2hash
+.IP K2HPAGESIZE 20
+initial page size for k2hash when using k2hash
+.IP K2HDTORSVR_TRANS 20
+if relay transaction, specify transaction chmpx configuration.
+.IP DTORTHREADCNT 20
+if relay transaction, specify transaction thread count to setting k2hash.
+.br
+.SH ENVIRONMENT
+.TP 2
+This program use some environments automatically, plese take care these environments.
+.IP DTORSVRCONFFILE 20
+specify configuratin file by environment, this program uses this value when configuration file is not specified in command line.
+.IP DTORSVRJSONCONF 20
+specify configuratin json string by environment, chmpx uses this value when configuration json string is not specified in command line.
+.SH NOTES
+.TP
+K2HASH is NoSQL(key value store) library and tools for this library by Yahoo! JAPAN. K2HASH is following specifications.
+.SH SEE ALSO
+.TP
+k2hash(1) chmpx(1) fullock(3) k2htpdtor(3)
+.SH BUGS
+.TP
+Please report owner and comitter.
+.SH AUTHOR
+k2htpdtorsvr has been written by Takeshi Nakatani <ggtakec@gmail.com>.

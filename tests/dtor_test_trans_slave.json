@@ -1,0 +1,116 @@
+#
+# k2htpdtor for K2HASH TRANSACTION PLUGIN.
+#
+# Copyright 2015 Yahoo! JAPAN corporation.
+#
+# K2HASH TRANSACTION PLUGIN is programable I/F for processing
+# transaction data from modifying K2HASH data.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+#
+# AUTHOR:   Takeshi Nakatani
+# CREATE:   Thu Nor 17 2016
+# REVISION:
+#
+
+# 
+# CHMPX CONFIGRATION FILE FOR TESTING K2HTPDTOR SVR
+#
+
+{
+    #
+    # GLOBAL SECTION
+    #
+    "GLOBAL":
+    {
+        "FILEVERSION":        "1",
+        "DATE":               "Wed, 04 Nov 2015 11:22:13 +0900",
+        "GROUP":              "DTORTESTTRANS",
+        "MODE":               "SLAVE",
+        "DELIVERMODE":        "random",
+        #"DELIVERMODE":       "hash",
+        "MAXCHMPX":           "2",
+        "REPLICA":            "0",
+        "MAXMQSERVER":        "1",
+        "MAXMQCLIENT":        "1",
+        "MQPERATTACH":        "1",
+        "MAXQPERSERVERMQ":    "1",
+        "MAXQPERCLIENTMQ":    "1",
+        "MAXMQPERCLIENT":     "1",
+        "MAXHISTLOG":         "1000",
+        "PORT":               "8030",
+        "CTLPORT":            "8032",
+        "SELFCTLPORT":        "8032",
+        "RWTIMEOUT":          "100",
+        "RETRYCNT":           "1000",
+        "CONTIMEOUT":         "500000",
+        "MQRWTIMEOUT":        "50",
+        "MQRETRYCNT":         "20000",
+        "DOMERGE":            "on",
+        "SSL":                "no",
+        #"SSL":               "yes",
+        #"SSL_VERIFY_PEER":   "yes",
+        #"CAPATH":            "/etc/ssl/certs",
+        #"SERVER_CERT":       "/home/xxxxx/certs/server.crt",
+        #"SERVER_PRIKEY":     "/home/xxxxx/certs/server_201501.key",
+        #"SLAVE_CERT":        "/home/xxxxx/certs/client.crt",
+        #"SLAVE_PRIKEY":      "/home/xxxxx/certs/client_201501.key",
+        "K2HFULLMAP":         "on",
+        "K2HMASKBIT":         "4",
+        "K2HCMASKBIT":        "4",
+        "K2HMAXELE":          "2"
+    },
+
+    #
+    # SERVER NODES SECTION
+    #
+    "SVRNODE":
+    [
+        {
+            "NAME":               "localhost",
+            "PORT":               "8030",
+            "CTLPORT":            "8031",
+            "SSL":                "no",
+            #"SSL":               "yes",
+            #"SSL_VERIFY_PEER":   "yes",
+            #"CAPATH":            "/etc/ssl/certs",
+            #"SERVER_CERT":       "/home/xxxxx/certs/server.crt",
+            #"SERVER_PRIKEY":     "/home/xxxxx/certs/server_201501.key",
+            #"SLAVE_CERT":        "/home/xxxxx/certs/client.crt",
+            #"SLAVE_PRIKEY":      "/home/xxxxx/certs/client_201501.key"
+        }
+    ],
+
+    #
+    # SLAVE NODES SECTION
+    #
+    "SLVNODE":
+    [
+        {
+            "NAME":               "[.]*",
+            "CTLPORT":            "8032",
+            #"CAPATH":            "/etc/ssl/certs",
+            #"SLAVE_CERT":        "/home/xxxxx/certs/client.crt",
+            #"SLAVE_PRIKEY":      "/home/xxxxx/certs/client_201501.key"
+        }
+    ],
+
+    #
+    # K2HTPDTOR ON K2HTPDTORSVR TRANS
+    #
+    "K2HTPDTOR":
+    {
+        "K2HTPDTOR_BROADCAST":    "yes",
+        #"K2HTPDTOR_CHMPXCONF":   "dtor_test_trans_slave.json",
+        "K2HTPDTOR_EXCEPT_KEY":   "test_fill_-",
+        "K2HTPDTOR_FILE":         "/tmp/dtor_test_trans_slave_archive.log",
+        #"K2HTPDTOR_FILTER_TYPE": "DELKEY"
+    }
+}
+
+#
+# VIM modelines
+#
+# vim:set ts=4 fenc=utf-8:
+#

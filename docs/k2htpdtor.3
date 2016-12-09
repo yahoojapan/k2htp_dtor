@@ -1,0 +1,48 @@
+.TH k2htpdtor "3" "February 2015" "k2htpdtor" "K2HASH TRANSACTION"
+.SH NAME
+k2htpdtor \- Shared library for K2HASH TRANSACTION PLUGIN.
+.SH SYNOPSIS
+.TP
+\fBlibk2htpdtor.so
+.SH DESCRIPTION
+.TP 2
+k2htpdtor is K2HASH DISTRIBUTED TRANSACTION OF REPEATER. This shared library is transaction plugin for k2hash library. The k2hash library has programable I/F for processing transaction data from modifying K2HASH data.
+.PP
+The k2htpdtor forwards the operation to other servers connecting by CHMPX.
+The k2htpdtor plugin is called by k2hash transaction plugin logic after the operation is occurred by changing the k2hash data.
+.PP
+The k2htpdtor need to get only one parameter for working.
+The basically parameter is the configration file path as same as the file for setting CHMPX on slave side.
+.PP
+The other type, the extended type paraemter is the configuration file for k2hdtor.
+The k2hdtor configration file is INI file  type, and it can have K2HTPDTOR_BROADCAST, K2HTPDTOR_CHMPXCONF, K2HTPDTOR_EXCEPT_KEY and K2HTPDTOR_FILE key in K2HTPDTOR section.
+.PP
+.IP K2HTPDTOR_BROADCAST 5
+This key means the flag that is whichever the operation message is broadcasting or not.
+.IP K2HTPDTOR_BROADCAST 5
+This key means the flag that is whichever the operation message is broadcasting or not.
+.IP K2HTPDTOR_EXCEPT_KEY 5
+This is the a part of key name in transaction data for expecting to not transfer. If you does not need to transfer the key in transaction data, you can set this key-value in configuration file. It is allowed that there are many K2HTPDTOR_EXCEPT_KEY in configuration file.
+.IP K2HTPDTOR_FILE 5
+This is the output file path which is wrote filtered transaction line.
+.IP K2HTPDTOR 5
+This key's value means the configuration file path for setting CHMPX on slave side. Thus the extended type parameter is k2hdtor's configuration file which has those keys.
+.PP
+You can set those keys in the configuration file for CHMPX on slave side.
+.IP K2HTPDTOR_CHMPXCONF 5
+This can be a two configuration files(for CHMPX and k2htpdtor) into a single file(CHMPX). If you use a single configuration file, you can write K2HTPDTOR section in CHMPX configuration file. Then you do not specify K2HTPDTOR_CHMPXCONF key in that file. So k2htpdtor can know the configuration file for CHMPX is this file.
+.PP
+You can set the parameter(configuration file) by calling k2h_enable_transaction_param() or K2HShm::EnableTransaction() function at starting transaction.
+If you need more information, you can see the sample codes in tests directory on GitHub.
+.PP
+.SH NOTES
+.TP
+K2HASH is NoSQL(key value store) library and tools for this library by Yahoo! JAPAN. K2HASH is following specifications.
+.SH SEE ALSO
+.TP
+k2hash(1) chmpx(1) fullock(3) k2htpdtorsvr(1)
+.SH BUGS
+.TP
+Please report owner and comitter.
+.SH AUTHOR
+k2htpdtor has been written by Takeshi Nakatani <ggtakec@gmail.com>.
