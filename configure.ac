@@ -67,7 +67,7 @@ AC_CONFIG_FILES([Makefile
 
 # k2hash
 if test "x${CHECK_K2HASH}" != "xno"; then
-	PKG_CHECK_MODULES([k2hash], [libk2hash >= 1.0.52], [have_k2hash=yes], [have_k2hash=no])
+	PKG_CHECK_MODULES([k2hash], [libk2hash >= 1.0.54], [have_k2hash=yes], [have_k2hash=no])
 	if test "x${have_k2hash}" = "xno"; then
 		AC_MSG_ERROR([not found k2hash package.])
 	fi
@@ -75,7 +75,7 @@ fi
 
 # chmpx
 if test "x${CHECK_CHMPX}" != "xno"; then
-	PKG_CHECK_MODULES([chmpx], [libchmpx >= 1.0.50], [have_chmpx=yes], [have_chmpx=no])
+	PKG_CHECK_MODULES([chmpx], [libchmpx >= 1.0.51], [have_chmpx=yes], [have_chmpx=no])
 	if test "x${have_chmpx}" = "xno"; then
 		AC_MSG_ERROR([not found chmpx package.])
 	fi
@@ -83,7 +83,7 @@ fi
 
 #fullock
 if test "x${CHECK_FULLOCK}" != "xno"; then
-	PKG_CHECK_MODULES([fullock], [libfullock >= 1.0.21], [have_fullock=yes], [have_fullock=no])
+	PKG_CHECK_MODULES([fullock], [libfullock >= 1.0.23], [have_fullock=yes], [have_fullock=no])
 	if test "x${have_fullock}" = "xno"; then
 		AC_MSG_ERROR([not found fullock package.])
 	fi
