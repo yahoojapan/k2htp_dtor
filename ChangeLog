@@ -1,3 +1,9 @@
+k2htpdtor (1.0.22) trusty; urgency=low
+
+  * Updated submodule dependency for chmpx/k2hash
+
+ -- Hirotaka Wakabayashi <hiwakaba@yahoo-corp.jp>  Mon, 26 Mar 2018 15:44:29 +0900
+
 k2htpdtor (1.0.21) trusty; urgency=low
 
   * Added lib_version_for_link option to make_valiables.sh

@@ -9,10 +9,14 @@ data from modifying K2HASH data.
 This k2htp_dtor project is the base templates for building K2HASH
 TRANSACTION PLUGIN.
 
-### Doccuments
+### Documents
   - https://github.com/yahoojapan/k2htp_dtor/wiki
 
 ### License
-This software is released under the MIT License, see the LICENSE file.
+This software is released under the MIT License, see the license file.
 
-Copyright 2015 Yahoo! JAPAN corporation.
+### AntPickax
+k2htpdtor is one of [AntPickax](https://yahoojapan.github.io/AntPickax/) products.
+
+Copyright 2015 Yahoo Japan corporation.
+
