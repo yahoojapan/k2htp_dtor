@@ -1,13 +1,13 @@
 /*
  * k2htpdtor for K2HASH TRANSACTION PLUGIN.
  *
- * Copyright 2015 Yahoo! JAPAN corporation.
+ * Copyright 2015 Yahoo Japan Corporation.
  *
  * K2HASH TRANSACTION PLUGIN is programable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * the license file that was distributed with this source code.
  *
  * AUTHOR:   Takeshi Nakatani
  * CREATE:   Tue Mar 3 2015
@@ -81,7 +81,7 @@ static void PrintVersion(FILE* stream)
 		"\n"
 		"k2htpdtorsvr Version %s (commit: %s)\n"
 		"\n"
-		"Copyright 2015 Yahoo! JAPAN corporation.\n"
+		"Copyright(C) 2015 Yahoo Japan Corporation.\n"
 		"\n"
 		"K2HASH TRANSACTION PLUGIN is programable I/F for processing\n"
 		"transaction data from modifying K2HASH data.\n"

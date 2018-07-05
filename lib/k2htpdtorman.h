@@ -1,13 +1,13 @@
 /*
  * k2htpdtor for K2HASH TRANSACTION PLUGIN.
  *
- * Copyright 2015 Yahoo! JAPAN corporation.
+ * Copyright 2015 Yahoo Japan Corporation.
  *
  * K2HASH TRANSACTION PLUGIN is programable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * the license file that was distributed with this source code.
  *
  * AUTHOR:   Takeshi Nakatani
  * CREATE:   Thu Feb 26 2015
@@ -138,7 +138,6 @@ class K2HtpDtorManager
 	protected:
 		static const int			SLEEP_MS = 100;	// 100ms default for waiting epoll event
 		static const int			WAIT_EVENT_MAX = 32;
-		static K2HtpDtorManager		singleton;		// singleton object
 
 		volatile int				LockVal;		// the value to curfwmap(fullock_mutex)
 		volatile bool				run_thread;
@@ -156,14 +155,14 @@ class K2HtpDtorManager
 		static bool LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
 		static bool LoadConfigrationYamlContents(yaml_parser_t& yparser, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
 
+		K2HtpDtorManager();
+		virtual ~K2HtpDtorManager();
+
 		bool UpdateWatch(bool force = false);
 		bool CheckWatch(int inotifyfd);
 
 	public:
-		static K2HtpDtorManager* Get(void) { return &K2HtpDtorManager::singleton; }
-
-		K2HtpDtorManager();
-		virtual ~K2HtpDtorManager();
+		static K2HtpDtorManager* Get(void);			// singleton object
 
 		bool Add(k2h_h k2hhandle, const char* pchmpxconf);
 		bool Remove(k2h_h k2hhandle);
