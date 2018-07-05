@@ -1,13 +1,13 @@
 /*
  * k2htpdtor for K2HASH TRANSACTION PLUGIN.
  *
- * Copyright 2015 Yahoo! JAPAN corporation.
+ * Copyright 2015 Yahoo Japan Corporation.
  *
  * K2HASH TRANSACTION PLUGIN is programable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * the license file that was distributed with this source code.
  *
  * AUTHOR:   Takeshi Nakatani
  * CREATE:   Thu Feb 26 2015
@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 #include <pthread.h>
 #include <sys/epoll.h>
 #include <sys/inotify.h>
@@ -258,13 +257,21 @@ static bool parse_except_types(const char* pexcepts, excepttypemap_t& excmap)
 //---------------------------------------------------------
 // K2HtpDtorManager : Class valiables
 //---------------------------------------------------------
-const int			K2HtpDtorManager::SLEEP_MS;
-const int			K2HtpDtorManager::WAIT_EVENT_MAX;
-K2HtpDtorManager	K2HtpDtorManager::singleton;
+const int	K2HtpDtorManager::SLEEP_MS;
+const int	K2HtpDtorManager::WAIT_EVENT_MAX;
 
 //---------------------------------------------------------
 // K2HtpDtorManager : Class Methods
 //---------------------------------------------------------
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
+//
+K2HtpDtorManager* K2HtpDtorManager::Get(void)
+{
+	static K2HtpDtorManager	dtorman;				// singleton
+	return &dtorman;
+}
+
 void* K2HtpDtorManager::WorkerThread(void* param)
 {
 	K2HtpDtorManager*	pDtorMan = reinterpret_cast<K2HtpDtorManager*>(param);
@@ -854,68 +861,59 @@ bool K2HtpDtorManager::LoadConfigrationYamlContents(yaml_parser_t& yparser, stri
 //---------------------------------------------------------
 K2HtpDtorManager::K2HtpDtorManager() : LockVal(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED), run_thread(false), epollfd(DTOR_INVALID_HANDLE)
 {
-	if(this == K2HtpDtorManager::Get()){
-		dtormap.clear();
-		dtorlist.clear();
+	dtormap.clear();
+	dtorlist.clear();
 
-		// create epoll fd
-		if(DTOR_INVALID_HANDLE == (epollfd = epoll_create1(EPOLL_CLOEXEC))){
-			ERR_K2HPRN("Could not make epoll fd by errno(%d), but continue,,,", errno);
-		}else{
-			// run watch thread
-			int	result;
-			run_thread = true;
-			if(0 != (result = pthread_create(&watch_thread, NULL, K2HtpDtorManager::WorkerThread, this))){
-				ERR_K2HPRN("Could not create thread by errno(%d), but continue,,,", result);
-				run_thread = false;
-			}
-		}
+	// create epoll fd
+	if(DTOR_INVALID_HANDLE == (epollfd = epoll_create1(EPOLL_CLOEXEC))){
+		ERR_K2HPRN("Could not make epoll fd by errno(%d), but continue,,,", errno);
 	}else{
-		assert(false);
+		// run watch thread
+		int	result;
+		run_thread = true;
+		if(0 != (result = pthread_create(&watch_thread, NULL, K2HtpDtorManager::WorkerThread, this))){
+			ERR_K2HPRN("Could not create thread by errno(%d), but continue,,,", result);
+			run_thread = false;
+		}
 	}
 }
 
 K2HtpDtorManager::~K2HtpDtorManager()
 {
-	if(this == K2HtpDtorManager::Get()){
-		// stop watch thread
-		if(run_thread){
-			run_thread = false;
+	// stop watch thread
+	if(run_thread){
+		run_thread = false;
 
-			// wait for thread exit
-			void*	pretval = NULL;
-			int		result;
-			if(0 != (result = pthread_join(watch_thread, &pretval))){
-				ERR_K2HPRN("Failed to wait thread exiting by errno(%d), but continue,,,", result);
-			}else{
-				MSG_K2HPRN("Succeed to wait thread exiting,");
-			}
+		// wait for thread exit
+		void*	pretval = NULL;
+		int		result;
+		if(0 != (result = pthread_join(watch_thread, &pretval))){
+			ERR_K2HPRN("Failed to wait thread exiting by errno(%d), but continue,,,", result);
+		}else{
+			MSG_K2HPRN("Succeed to wait thread exiting,");
 		}
-
-		// set remove flag for all dtor
-		fullock::flck_lock_noshared_mutex(&LockVal);				// MUTEX LOCK
-		for(dtormap_t::iterator iter = dtormap.begin(); iter != dtormap.end(); dtormap.erase(iter++)){
-			PDTORINFO	pdtor = iter->second;
-			if(!pdtor){
-				ERR_K2HPRN("K2HTPDTOR k2hash handle(0x%016" PRIx64 ") does not have DTOR information, but continue...", iter->first);
-			}else{
-				// set remove flag
-				pdtor->remove_this = true;
-			}
-		}
-		fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
-
-		// remove dtor manually
-		if(!UpdateWatch(true)){
-			WAN_K2HPRN("Somthing wrong to remove all dtor list.");
-		}
-
-		// close epoll
-		K2H_CLOSE(epollfd);
-
-	}else{
-		assert(false);
 	}
+
+	// set remove flag for all dtor
+	fullock::flck_lock_noshared_mutex(&LockVal);				// MUTEX LOCK
+	for(dtormap_t::iterator iter = dtormap.begin(); iter != dtormap.end(); dtormap.erase(iter++)){
+		PDTORINFO	pdtor = iter->second;
+		if(!pdtor){
+			ERR_K2HPRN("K2HTPDTOR k2hash handle(0x%016" PRIx64 ") does not have DTOR information, but continue...", iter->first);
+		}else{
+			// set remove flag
+			pdtor->remove_this = true;
+		}
+	}
+	fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
+
+	// remove dtor manually
+	if(!UpdateWatch(true)){
+		WAN_K2HPRN("Somthing wrong to remove all dtor list.");
+	}
+
+	// close epoll
+	K2H_CLOSE(epollfd);
 }
 
 bool K2HtpDtorManager::Add(k2h_h k2hhandle, const char* pchmpxconf)

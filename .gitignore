@@ -1,13 +1,13 @@
 #
 # k2htpdtor for K2HASH TRANSACTION PLUGIN.
 #
-# Copyright 2015 Yahoo! JAPAN corporation.
+# Copyright 2015 Yahoo Japan corporation.
 #
 # K2HASH TRANSACTION PLUGIN is programable I/F for processing
 # transaction data from modifying K2HASH data.
 #
 # For the full copyright and license information, please view
-# the LICENSE file that was distributed with this source code.
+# the license file that was distributed with this source code.
 #
 # AUTHOR:   Takeshi Nakatani
 # CREATE:   Thu Feb 26 2015
@@ -85,7 +85,7 @@ stamp-h1
 # automakes
 #
 Makefile.in
-*/Makefile.in
+Makefile
 
 
 #
@@ -94,6 +94,7 @@ Makefile.in
 *.tgz
 *.tar.gz
 *.rpm
+*.deb
 *.swp
 
 #
@@ -113,22 +114,28 @@ compile
 compile/*
 test-driver
 test-driver/*
+.dirstamp
 
 #
 # Other built objects
 #
-*.pc
-Makefile
-*/Makefile
-
-#
-# project custom
-#
 RELEASE_VERSION
+COMMIT_HASH
+*.pc
+*.spec
+*.k2h
+buildutils/control
+buildutils/copyright
+rpmbuild
+rpmbuild/*
+debian
+debian/*
+debian_build
+debian_build/*
 lib/k2htpdtorversion.cc
 src/k2htpdtorsvrversion.cc
-*.k2h
 src/k2htpdtorsvr
+tests/results.xml
 tests/k2htpdtorserver
 tests/k2htpdtorclient
 

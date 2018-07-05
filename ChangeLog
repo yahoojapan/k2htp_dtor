@@ -1,3 +1,18 @@
+k2htpdtor (1.0.24) trusty; urgency=low
+
+  * Revert subdir-objects automake option in src directory
+  * avoid static object initialization order problem(SIOF)
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 02 Jul 2018 11:11:30 +0900
+
+k2htpdtor (1.0.23) trusty; urgency=low
+
+  * Cleanup credit comments in sources and Modified etc
+  * Changed build logic to new for rpm/debian packaging
+  * Fixed a filename typo of make_variables.sh
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 17 May 2018 14:21:10 +0900
+
 k2htpdtor (1.0.22) trusty; urgency=low
 
   * Updated submodule dependency for chmpx/k2hash
