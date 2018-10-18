@@ -1,3 +1,9 @@
+k2htpdtor (1.0.25) trusty; urgency=low
+
+  * Fixed destructing code for corresponding to SIOF, etc
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Wed, 17 Oct 2018 19:12:19 +0900
+
 k2htpdtor (1.0.24) trusty; urgency=low
 
   * Revert subdir-objects automake option in src directory
