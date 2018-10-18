@@ -897,7 +897,8 @@ K2HtpDtorManager::~K2HtpDtorManager()
 	// set remove flag for all dtor
 	fullock::flck_lock_noshared_mutex(&LockVal);				// MUTEX LOCK
 	for(dtormap_t::iterator iter = dtormap.begin(); iter != dtormap.end(); dtormap.erase(iter++)){
-		PDTORINFO	pdtor = iter->second;
+		PDTORINFO	pdtor	= iter->second;
+		iter->second		= NULL;
 		if(!pdtor){
 			ERR_K2HPRN("K2HTPDTOR k2hash handle(0x%016" PRIx64 ") does not have DTOR information, but continue...", iter->first);
 		}else{
@@ -938,7 +939,10 @@ bool K2HtpDtorManager::Add(k2h_h k2hhandle, const char* pchmpxconf)
 	while(!fullock::flck_trylock_noshared_mutex(&LockVal));			// MUTEX LOCK
 	if(dtormap.end() != dtormap.find(k2hhandle)){
 		// already has k2hhandle mapping but it is not same conf file, so remove this(in thread).
-		dtormap[k2hhandle]->remove_this = true;
+		PDTORINFO	pdtor = dtormap[k2hhandle];
+		if(pdtor){
+			pdtor->remove_this = true;
+		}
 		dtormap.erase(k2hhandle);
 	}
 	fullock::flck_unlock_noshared_mutex(&LockVal);					// MUTEX UNLOCK
@@ -980,6 +984,9 @@ bool K2HtpDtorManager::Remove(k2h_h k2hhandle)
 	}else{
 		PDTORINFO	pdtor	= dtormap[k2hhandle];
 		pdtor->remove_this	= true;
+		if(pdtor){
+			pdtor->remove_this	= true;
+		}
 		dtormap.erase(k2hhandle);
 	}
 	fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
@@ -1243,22 +1250,24 @@ bool K2HtpDtorManager::GetChmpxMsgId(k2h_h k2hhandle, chmpx_h& chmpxhandle, msgi
 
 	}else{
 		PDTORINFO	pdtor	= dtormap[k2hhandle];
-		if(pdtor->msgidmap.end() == pdtor->msgidmap.find(tid)){
-			MSG_K2HPRN("K2HTPDTOR there is no tid(%d) msgid mapping, so open msgid new.", tid);
+		if(pdtor){
+			if(pdtor->msgidmap.end() == pdtor->msgidmap.find(tid)){
+				MSG_K2HPRN("K2HTPDTOR there is no tid(%d) msgid mapping, so open msgid new.", tid);
 
-			if(CHM_INVALID_MSGID == (msgid = chmpx_open(pdtor->chmpxhandle, false))){
-				ERR_K2HPRN("K2HTPDTOR could not open msgid for tid(%d) in chmpx handle(0x%016" PRIx64 "), k2hash handle(0x%016" PRIx64 ").", tid, pdtor->chmpxhandle, k2hhandle);
+				if(CHM_INVALID_MSGID == (msgid = chmpx_open(pdtor->chmpxhandle, false))){
+					ERR_K2HPRN("K2HTPDTOR could not open msgid for tid(%d) in chmpx handle(0x%016" PRIx64 "), k2hash handle(0x%016" PRIx64 ").", tid, pdtor->chmpxhandle, k2hhandle);
+				}else{
+					chmpxhandle				= pdtor->chmpxhandle;
+					isbroadcast				= pdtor->is_broadcast;
+					pdtor->msgidmap[tid]	= msgid;
+					result					= true;
+				}
 			}else{
-				chmpxhandle				= pdtor->chmpxhandle;
-				isbroadcast				= pdtor->is_broadcast;
-				pdtor->msgidmap[tid]	= msgid;
-				result					= true;
+				chmpxhandle	= pdtor->chmpxhandle;
+				isbroadcast	= pdtor->is_broadcast;
+				msgid		= pdtor->msgidmap[tid];
+				result		= true;
 			}
-		}else{
-			chmpxhandle	= pdtor->chmpxhandle;
-			isbroadcast	= pdtor->is_broadcast;
-			msgid		= pdtor->msgidmap[tid];
-			result		= true;
 		}
 	}
 	fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
@@ -1280,7 +1289,9 @@ bool K2HtpDtorManager::IsExceptKey(k2h_h k2hhandle, const unsigned char* pkey, s
 		ERR_K2HPRN("K2HTPDTOR does not have k2hash handle(0x%016" PRIx64 ") mapping.", k2hhandle);
 	}else{
 		PDTORINFO	pdtor	= dtormap[k2hhandle];
-		result = find_dtorpbylst(pdtor->excepts, pkey, length);
+		if(pdtor){
+			result = find_dtorpbylst(pdtor->excepts, pkey, length);
+		}
 	}
 	fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
 
@@ -1302,7 +1313,9 @@ bool K2HtpDtorManager::IsExceptType(k2h_h k2hhandle, long type)
 		WAN_K2HPRN("K2HTPDTOR already does not have k2hash handle(0x%016" PRIx64 ").", k2hhandle);
 	}else{
 		PDTORINFO	pdtor	= dtormap[k2hhandle];
-		result = (pdtor->excepttypes.end() != pdtor->excepttypes.find(type));
+		if(pdtor){
+			result = (pdtor->excepttypes.end() != pdtor->excepttypes.find(type));
+		}
 	}
 	fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
 
@@ -1327,9 +1340,10 @@ bool K2HtpDtorManager::IsExcept(k2h_h k2hhandle, const unsigned char* pkey, size
 		WAN_K2HPRN("K2HTPDTOR already does not have k2hash handle(0x%016" PRIx64 ").", k2hhandle);
 	}else{
 		PDTORINFO	pdtor	= dtormap[k2hhandle];
-
-		if(false == (result = (pdtor->excepttypes.end() != pdtor->excepttypes.find(type)))){
-			result = find_dtorpbylst(pdtor->excepts, pkey, length);
+		if(pdtor){
+			if(false == (result = (pdtor->excepttypes.end() != pdtor->excepttypes.find(type)))){
+				result = find_dtorpbylst(pdtor->excepts, pkey, length);
+			}
 		}
 	}
 	fullock::flck_unlock_noshared_mutex(&LockVal);				// MUTEX UNLOCK
@@ -1353,7 +1367,7 @@ int K2HtpDtorManager::GetOutputFd(k2h_h k2hhandle, bool is_lock)
 	}
 
 	PDTORINFO	pdtor = dtormap[k2hhandle];
-	if(pdtor->outputfile.empty()){
+	if(!pdtor || pdtor->outputfile.empty()){
 		fullock::flck_unlock_noshared_mutex(&LockVal);			// MUTEX UNLOCK
 		return DTOR_INVALID_HANDLE;
 	}
