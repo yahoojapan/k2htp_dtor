@@ -1,3 +1,9 @@
+k2htpdtor (1.0.26) trusty; urgency=low
+
+  * Changed to strict packaging and changed documents
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 06 Dec 2018 15:36:40 +0900
+
 k2htpdtor (1.0.25) trusty; urgency=low
 
   * Fixed destructing code for corresponding to SIOF, etc

@@ -1,6 +1,12 @@
 k2htp_dtor
--------------
+----------
 [![Build Status](https://travis-ci.org/yahoojapan/k2htp_dtor.svg?branch=master)](https://travis-ci.org/yahoojapan/k2htp_dtor)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/yahoojapan/k2htp_dtor/master/COPYING)
+[![GitHub forks](https://img.shields.io/github/forks/yahoojapan/k2htp_dtor.svg)](https://github.com/yahoojapan/k2htp_dtor/network)
+[![GitHub stars](https://img.shields.io/github/stars/yahoojapan/k2htp_dtor.svg)](https://github.com/yahoojapan/k2htp_dtor/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/yahoojapan/k2htp_dtor.svg)](https://github.com/yahoojapan/k2htp_dtor/issues)
+[![debian packages](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/antpickax/stable)
+[![RPM packages](https://img.shields.io/badge/rpm-packagecloud.io-844fec.svg)](https://packagecloud.io/antpickax/stable)
 
 k2htpdtor is for K2HASH TRANSACTION PLUGIN.
 
@@ -11,7 +17,13 @@ This k2htp_dtor project is the base templates for building K2HASH
 TRANSACTION PLUGIN.
 
 ### Documents
-  - https://github.com/yahoojapan/k2htp_dtor/wiki
+  - [Document top page](https://k2htpdtor.antpick.ax/)
+  - [Github wiki page](https://github.com/yahoojapan/k2htp_dtor/wiki)
+  - [About AntPickax](https://antpick.ax/)
+
+### Packages
+  - [RPM packages(packagecloud.io)](https://packagecloud.io/antpickax/stable)
+  - [Debian packages(packagecloud.io)](https://packagecloud.io/antpickax/stable)
 
 ### License
 This software is released under the MIT License, see the license file.
