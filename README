@@ -1,5 +1,5 @@
 k2htp_dtor
--------------
+-----------
 
 k2htpdtor is for K2HASH TRANSACTION PLUGIN.
 
@@ -10,12 +10,11 @@ This k2htp_dtor project is the base templates for building K2HASH
 TRANSACTION PLUGIN.
 
 ### Documents
-  - https://github.com/yahoojapan/k2htp_dtor/wiki
+  - Github Pages - https://k2htpdtor.antpick.ax/
+  - Github Wiki - https://github.com/yahoojapan/k2htp_dtor/wiki
+  - AntPickax - https://antpick.ax/
 
 ### License
 This software is released under the MIT License, see the license file.
-
-### AntPickax
-k2htpdtor is one of [AntPickax](https://yahoojapan.github.io/AntPickax/) products.
 
 Copyright(C) 2015 Yahoo Japan Corporation.

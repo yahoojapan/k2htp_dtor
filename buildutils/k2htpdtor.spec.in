@@ -43,13 +43,11 @@ Name: @PACKAGE_NAME@
 Version: @VERSION@
 Release: %{package_revision}%{?dist}
 License: @PKGLICENSE@
-Group: Applications/Databases
+@RPMPKG_GROUP@
 URL: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@
 Source0: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@/archive/%{gittag}/%{name}-%{version}.tar.gz
-Requires: libfullock%{?_isa} >= 1.0.30, k2hash%{?_isa} >= 1.0.63, chmpx%{?_isa} >= 1.0.63
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: git-core gcc-c++ make libtool libfullock-devel%{?_isa} >= 1.0.30, k2hash-devel%{?_isa} >= 1.0.63, chmpx-devel%{?_isa} >= 1.0.63
-Prefix: %{_prefix}
+Requires: libfullock%{?_isa} >= 1.0.32, k2hash%{?_isa} >= 1.0.67, chmpx%{?_isa} >= 1.0.64
+BuildRequires: git-core gcc-c++ make libtool libfullock-devel%{?_isa} >= 1.0.32, k2hash-devel%{?_isa} >= 1.0.67, chmpx-devel%{?_isa} >= 1.0.64
 
 %description
 @LONGDESC@
@@ -59,12 +57,13 @@ Prefix: %{_prefix}
 
 %build
 ./autogen.sh
-%configure --disable-static
+%configure --disable-static @CONFIGREWITHOPT@
 %make_build
 
 %install
 %make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
+find %{buildroot} -name '*.so' -exec rm -f {} ';'
 
 %if %{make_check}
 %check
@@ -85,10 +84,13 @@ rm -rf %{buildroot}
 
 %files
 %if 0%{?rhel} == 6
+%doc COPYING
 %defattr(-,root,root)
+%else
+%license COPYING
 %endif
-%doc COPYING README AUTHORS ChangeLog
-%{_libdir}/*.so*
+%doc README AUTHORS ChangeLog
+%{_libdir}/*.so.1*
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*

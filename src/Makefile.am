@@ -14,11 +14,6 @@
 # REVISION:
 #
 
-# [NOTE]
-# Since it fails in packaging on part of the build system, the following line is commented out.
-#
-#AUTOMAKE_OPTIONS = subdir-objects
-
 bin_PROGRAMS = k2htpdtorsvr
 
 k2htpdtorsvr_SOURCES = k2htpdtorsvr.cc k2htpdtorsvrman.cc k2htpdtorsvrplugin.cc k2htpdtorsvrfd.cc k2htpdtorsvrparser.cc k2htpdtorsvrversion.cc ../lib/k2htpdtorfile.cc k2htpdtorsvrman.h k2htpdtorsvrplugin.h k2htpdtorsvrfd.h k2htpdtorsvrparser.h

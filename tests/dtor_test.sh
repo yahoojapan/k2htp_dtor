@@ -56,14 +56,14 @@ else
 	echo "RESULT --> FAILED"
 	exit 1
 fi
-if [ -f ${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so ]; then
-	DTORLIBSO=${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so
-elif [ -f ${K2HTPLIBDIR}/.libs/libk2htpdtor.so ]; then
-	DTORLIBSO=${K2HTPLIBDIR}/.libs/libk2htpdtor.so
-elif [ -f ${K2HTPLIBDIR}/libk2htpdtor.so ]; then
-	DTORLIBSO=${K2HTPLIBDIR}/libk2htpdtor.so
+if [ -f ${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so.1 ]; then
+	DTORLIBSO=${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so.1
+elif [ -f ${K2HTPLIBDIR}/.libs/libk2htpdtor.so.1 ]; then
+	DTORLIBSO=${K2HTPLIBDIR}/.libs/libk2htpdtor.so.1
+elif [ -f ${K2HTPLIBDIR}/libk2htpdtor.so.1 ]; then
+	DTORLIBSO=${K2HTPLIBDIR}/libk2htpdtor.so.1
 else
-	echo "ERROR: there is no libk2htpdtor.so binary"
+	echo "ERROR: there is no libk2htpdtor.so.1 binary"
 	echo "RESULT --> FAILED"
 	exit 1
 fi
@@ -187,14 +187,6 @@ if [ "X${DO_INI_CONF}" = "Xyes" ]; then
 	sleep 1
 
 	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET trans chmpx to SERVICEIN ------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8031
-	echo "SERVICEIN chmpx for trans server"
-	sleep 2
-
-	#
 	# chmpx for trans slave
 	#
 	echo "------ RUN chmpx on trans slave side -----------------------"
@@ -220,14 +212,6 @@ if [ "X${DO_INI_CONF}" = "Xyes" ]; then
 	K2HTPDTORSVRPID=$!
 	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
 	sleep 1
-
-	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET chmpx to SERVICEIN ------------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8021
-	echo "SERVICEIN chmpx for server"
-	sleep 2
 
 	#
 	# chmpx for slave
@@ -350,14 +334,6 @@ if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
 	sleep 1
 
 	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET trans chmpx to SERVICEIN ------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8031
-	echo "SERVICEIN chmpx for trans server"
-	sleep 2
-
-	#
 	# chmpx for trans slave
 	#
 	echo "------ RUN chmpx on trans slave side -----------------------"
@@ -383,14 +359,6 @@ if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
 	K2HTPDTORSVRPID=$!
 	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
 	sleep 1
-
-	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET chmpx to SERVICEIN ------------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8021
-	echo "SERVICEIN chmpx for server"
-	sleep 2
 
 	#
 	# chmpx for slave
@@ -513,14 +481,6 @@ if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
 	sleep 1
 
 	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET trans chmpx to SERVICEIN ------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8031
-	echo "SERVICEIN chmpx for trans server"
-	sleep 2
-
-	#
 	# chmpx for trans slave
 	#
 	echo "------ RUN chmpx on trans slave side -----------------------"
@@ -546,14 +506,6 @@ if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
 	K2HTPDTORSVRPID=$!
 	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
 	sleep 1
-
-	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET chmpx to SERVICEIN ------------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8021
-	echo "SERVICEIN chmpx for server"
-	sleep 2
 
 	#
 	# chmpx for slave
@@ -675,14 +627,6 @@ if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
 	sleep 1
 
 	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET trans chmpx to SERVICEIN ------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8031
-	echo "SERVICEIN chmpx for trans server"
-	sleep 2
-
-	#
 	# chmpx for trans slave
 	#
 	echo "------ RUN chmpx on trans slave side -----------------------"
@@ -708,14 +652,6 @@ if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
 	K2HTPDTORSVRPID=$!
 	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
 	sleep 1
-
-	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET chmpx to SERVICEIN ------------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8021
-	echo "SERVICEIN chmpx for server"
-	sleep 2
 
 	#
 	# chmpx for slave
@@ -837,14 +773,6 @@ if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
 	sleep 1
 
 	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET trans chmpx to SERVICEIN ------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8031
-	echo "SERVICEIN chmpx for trans server"
-	sleep 2
-
-	#
 	# chmpx for trans slave
 	#
 	echo "------ RUN chmpx on trans slave side -----------------------"
@@ -870,14 +798,6 @@ if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
 	K2HTPDTORSVRPID=$!
 	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
 	sleep 1
-
-	#
-	# SERVICEIN chmpx for trans server
-	#
-	echo "------ SET chmpx to SERVICEIN ------------------------------"
-	(sleep 2; echo SERVICEIN) | telnet localhost 8021
-	echo "SERVICEIN chmpx for server"
-	sleep 2
 
 	#
 	# chmpx for slave

@@ -36,7 +36,7 @@ using namespace std;
 //---------------------------------------------------------
 // Symbols
 //---------------------------------------------------------
-#define	K2HTPDTORSVR_K2HTPDTOR_LIB					"libk2htpdtor.so"
+#define	K2HTPDTORSVR_K2HTPDTOR_LIB					"libk2htpdtor.so.1"
 
 #define	TOPLUGIN_SET_BOTH							"SET_ALL "
 #define	TOPLUGIN_REP_VALUE							"REP_VAL "

@@ -92,7 +92,7 @@ sleep 2
 # test client process
 #
 echo "------ RUN & START test client process on slave side -------"
-${BASEDIR}/k2htpdtorclient -f ${BASEDIR}/dtor_test_archive.data -l ${BASEDIR}/../lib/.libs/libk2htpdtor.so -p ${BASEDIR}/dtor_test_slave.ini -c 1
+${BASEDIR}/k2htpdtorclient -f ${BASEDIR}/dtor_test_archive.data -l ${BASEDIR}/../lib/.libs/libk2htpdtor.so.1 -p ${BASEDIR}/dtor_test_slave.ini -c 1
 echo "finish test client process"
 sleep 10
 
