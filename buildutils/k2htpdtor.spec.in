@@ -46,8 +46,8 @@ License: @PKGLICENSE@
 @RPMPKG_GROUP@
 URL: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@
 Source0: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@/archive/%{gittag}/%{name}-%{version}.tar.gz
-Requires: libfullock%{?_isa} >= 1.0.32, k2hash%{?_isa} >= 1.0.67, chmpx%{?_isa} >= 1.0.64
-BuildRequires: git-core gcc-c++ make libtool libfullock-devel%{?_isa} >= 1.0.32, k2hash-devel%{?_isa} >= 1.0.67, chmpx-devel%{?_isa} >= 1.0.64
+Requires: libfullock%{?_isa} >= 1.0.33, k2hash%{?_isa} >= 1.0.68, chmpx%{?_isa} >= 1.0.65
+BuildRequires: git-core gcc-c++ make libtool libfullock-devel%{?_isa} >= 1.0.33, k2hash-devel%{?_isa} >= 1.0.68, chmpx-devel%{?_isa} >= 1.0.65
 
 %description
 @LONGDESC@
@@ -57,7 +57,7 @@ BuildRequires: git-core gcc-c++ make libtool libfullock-devel%{?_isa} >= 1.0.32,
 
 %build
 ./autogen.sh
-%configure --disable-static @CONFIGREWITHOPT@
+%configure --disable-static @CONFIGUREWITHOPT@
 %make_build
 
 %install
@@ -90,7 +90,7 @@ rm -rf %{buildroot}
 %license COPYING
 %endif
 %doc README AUTHORS ChangeLog
-%{_libdir}/*.so.1*
+%{_libdir}/*.so.*
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*

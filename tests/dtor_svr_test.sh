@@ -72,14 +72,6 @@ echo "test server process pid = ${TESTSVRPID}"
 sleep 1
 
 #
-# server chmpx service in
-#
-echo "------ SET chmpx mode to SERVICEIN -------------------------"
-(sleep 2; echo SERVICEIN) | telnet localhost 8021
-echo "chmpx on server side status to SERVICEIN"
-sleep 2
-
-#
 # chmpx for slave
 #
 echo "------ RUN chmpx on slave side -----------------------------"
