@@ -77,9 +77,9 @@ display version of K2HTPDTORSVR program
 Specify the configuration file(formatted by INI, YAML, JSON) for CHMPX server node. This option is exclusive with the -json option.
 #### -json
 Specify the configuration by JSON string for CHMPX server node. This option is exclusive with the -conf option.
-#### -d <debug level>
+#### -d \<debug level\>
 Specify the level of output message. The level value is silent, err, wan, info or dump. as default silent.
-#### -dlog <file path>
+#### -dlog \<file path\>
 Specify the file path which the output message puts.
 
 ### Environments for K2HTPDTORSVR
