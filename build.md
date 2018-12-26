@@ -13,59 +13,79 @@ next_url:
 next_string: 
 ---
 
-# Building
-The build method for K2HTPDTOR and K2HTPDTORSVR is explained below.
 
-## 1. Install prerequisites before compiling
-- Debian / Ubuntu
-```
-$ sudo aptitude update
-$ sudo aptitude install git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config libssl-dev libyaml-dev
-```
-- Fedora / CentOS
-```
-$ sudo yum install git autoconf automake gcc libstdc++-devel gcc-c++ make libtool openssl-devel libyaml-devel
+# Build
+
+This chapter consists of three parts:
+
+* how to set up **k2htp_dtor(aka dtor)** for local development
+* how to build **dtor** from the source code
+* how to install **dtor**.
+
+## 1. Install prerequisites
+
+**dtor** primarily depends on **fullock**, **k2hash** and **chmpx**. Each dependent library and the header files are required to build **dtor**. We provide two ways to install them. You can select your favorite one.
+
+* Use [GitHub](https://github.com/)  
+  Install the source code of dependent libraries and the header files. You will **build** them and install them.
+* Use [packagecloud.io](https://packagecloud.io/)  
+  Install packages of dependent libraries and the header files. You just install them. Libraries are already built.
+
+### 1.1. Install each dependent library and the header files from GitHub
+
+Read the following documents for details:
+
+* [fullock](https://fullock.antpick.ax/build.html)
+* [k2hash](https://k2hash.antpick.ax/build.html)
+* [chmpx](https://chmpx.antpick.ax/build.html)
+
+### 1.2. Install each dependent library and the header files from packagecloud.io
+
+This section instructs how to install each dependent library and the header files from [packagecloud.io](https://packagecloud.io/). 
+
+Note: Skip reading this section if you have installed each dependent library and the header files from [GitHub](https://github.com/) in the previous section.
+
+For DebianStretch or Ubuntu(Bionic Beaver) users, follow the steps below:
+```bash
+$ sudo apt-get update -y
+$ sudo apt-get install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.deb.sh \
+    | sudo bash
+$ sudo apt-get install autoconf autotools-dev gcc g++ make gdb libtool pkg-config \
+    libyaml-dev libfullock-dev k2hash-dev chmpx-dev -y
+$ sudo apt-get install git -y
 ```
 
-## 2. Building and installing FULLOCK
+For Fedora28 or CentOS7.x(6.x) users, follow the steps below:
+```bash
+$ sudo yum makecache
+$ sudo yum install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh \
+    | sudo bash
+$ sudo yum install autoconf automake gcc gcc-c++ gdb make libtool pkgconfig \
+    libyaml-devel libfullock-devel k2hash-devel chmpx-devel -y
+$ sudo yum install git -y
 ```
-$ git clone https://github.com/yahoojapan/fullock.git
-$ cd fullock
-$ ./autoge,sh
+
+## 2. Clone the source code from GitHub
+
+Download the **dtor**'s source code from [GitHub](https://github.com/).
+```bash
+$ git clone https://github.com/yahoojapan/k2htp_dtor.git
+```
+
+## 3. Build and install
+
+Just follow the steps below to build **dtor** and install it. We use [GNU Automake](https://www.gnu.org/software/automake/) to build **dtor**.
+```bash
+$ cd k2htp_dtor
+$ sh autogen.sh
 $ ./configure --prefix=/usr
 $ make
 $ sudo make install
 ```
 
-## 3. Building and installing K2HASH
-```
-$ git clone https://github.com/yahoojapan/k2hash.git
-$ cd k2hash
-$ ./autoge,sh
-$ ./configure --prefix=/usr
-$ make
-$ sudo make install
-```
-
-## 4. Building and installing CHMPX
-```
-$ git clone https://github.com/yahoojapan/chmpx.git
-$ cd chmpx
-$ ./autoge,sh
-$ ./configure --prefix=/usr
-$ make
-$ sudo make install
-```
-
-## 5. Clone source codes from Github
-```
-$ git clone git@github.com:yahoojapan/chmpx.gif
-```
-
-## 6. Building and installing K2HTPDTOR/K2HTPDTORSVR
-```
-$ ./autoge,sh
-$ ./configure --prefix=/usr
-$ make
-$ sudo make install
+After successfully installing **dtor**, you will see the manual page for **dtor**:
+```bash
+$ man k2htpdtor
 ```
