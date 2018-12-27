@@ -17,30 +17,30 @@ next_string:
 
 この章は3つの部分から構成されています。
 
-* ローカル開発用に**k2htp_dtor**（別名**dtor**）を設定する方法
-* ソースコードから**dtor**を構築する方法
-* **dtor**のインストール方法
+* ローカル開発用に**K2HTPDTOR**を設定する方法
+* ソースコードから**K2HTPDTOR**を構築する方法
+* **K2HTPDTOR**のインストール方法
 
-## 1. 前提条件をインストールする
+## 1. ビルド環境の構築
 
-**dtor**は主に、fullock、k2hash、およびchmpxに依存します。それぞれの依存ライブラリとヘッダファイルは**dtor**をビルドするために必要です。それぞれの依存ライブラリとヘッダファイルをインストールする方法は2つあります。好きなものを選ぶことができます。
+**K2HTPDTOR**は主に、**fullock**、**k2hash**、および**chmpx**に依存します。それぞれの依存ライブラリとヘッダファイルは**K2HTPDTOR**をビルドするために必要です。それぞれの依存ライブラリとヘッダファイルをインストールする方法は2つあります。好きなものを選ぶことができます。
 
-* GitHubを使う  
+* [GitHub](https://github.com/yahoojapan)から依存ファイルをインストール
   依存ライブラリのソースコードとヘッダファイルをインストールします。あなたはそれぞれの依存ライブラリとヘッダファイルをビルドしてインストールします。
-* packagecloud.ioを使用する  
+* [packagecloud.io](https://packagecloud.io/)を使用する
   依存ライブラリのパッケージとヘッダファイルをインストールします。あなたはそれぞれの依存ライブラリとヘッダファイルをインストールするだけです。ライブラリはすでに構築されています。
 
-### 1.1. GitHubから各依存ライブラリとヘッダファイルをインストールします。
+### 1.1. GitHubから各依存ライブラリとヘッダファイルをインストール
 
 詳細については以下の文書を読んでください。
 
-* [fullock](https://fullock.antpick.ax/build.html)
-* [k2hash](https://k2hash.antpick.ax/build.html)
-* [chmpx](https://chmpx.antpick.ax/build.html)
+* [fullock](https://fullock.antpick.ax/buildja.html)
+* [k2hash](https://k2hash.antpick.ax/buildja.html)
+* [chmpx](https://chmpx.antpick.ax/buildja.html)
 
-### 1.2. packagecloud.ioから各依存ライブラリとヘッダファイルをインストールします。
+### 1.2. packagecloud.ioから各依存ライブラリとヘッダファイルをインストール
 
-このセクションでは、packagecloud.ioから各依存ライブラリとヘッダーファイルをインストールする方法を説明します。
+このセクションでは、[packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable)から各依存ライブラリとヘッダーファイルをインストールする方法を説明します。
 
 注：前のセクションで各依存ライブラリとGitHubからのヘッダーファイルをインストールした場合は、このセクションを読み飛ばしてください。
 
@@ -68,14 +68,14 @@ $ sudo yum install git -y
 
 ## 2. GitHubからソースコードを複製する
 
-GitHubから**dtor**のソースコードをダウンロードしてください。
+GitHubから**K2HTPDTOR**の[ソースコード](https://github.com/yahoojapan/k2htp_dtor)をダウンロードしてください。
 ```bash
 $ git clone https://github.com/yahoojapan/k2htp_dtor.git
 ```
 
 ## 3. ビルドしてインストールする
 
-以下の手順に従って**dtor**をビルドしてインストールしてください。 [GNU Automake](https://www.gnu.org/software/automake/)を使って**dtor**を構築します。
+以下の手順に従って**K2HTPDTOR**をビルドしてインストールしてください。 [GNU Automake](https://www.gnu.org/software/automake/)を使って**K2HTPDTOR**を構築します。
 ```bash
 $ cd k2htp_dtor
 $ sh autogen.sh
@@ -84,7 +84,7 @@ $ make
 $ sudo make install
 ```
 
-**dtor**のインストールが成功すると、**dtor**のマニュアルページが表示されます。
+**K2HTPDTOR**のインストールが成功すると、**K2HTPDTOR**のマニュアルページが表示されます。
 ```bash
 $ man k2htpdtor
 ```
