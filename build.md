@@ -13,20 +13,19 @@ next_url:
 next_string: 
 ---
 
-
 # Build
 
 This chapter consists of three parts:
 
-* how to set up **k2htp_dtor(aka dtor)** for local development
-* how to build **dtor** from the source code
-* how to install **dtor**.
+* how to set up **K2HTPDTOR** for local development
+* how to build **K2HTPDTOR** from the source code
+* how to install **K2HTPDTOR**.
 
 ## 1. Install prerequisites
 
-**dtor** primarily depends on **fullock**, **k2hash** and **chmpx**. Each dependent library and the header files are required to build **dtor**. We provide two ways to install them. You can select your favorite one.
+**K2HTPDTOR** primarily depends on **fullock**, **k2hash** and **chmpx**. Each dependent library and the header files are required to build **K2HTPDTOR**. We provide two ways to install them. You can select your favorite one.
 
-* Use [GitHub](https://github.com/)  
+* Use [GitHub](https://github.com/yahoojapan)  
   Install the source code of dependent libraries and the header files. You will **build** them and install them.
 * Use [packagecloud.io](https://packagecloud.io/)  
   Install packages of dependent libraries and the header files. You just install them. Libraries are already built.
@@ -41,9 +40,9 @@ Read the following documents for details:
 
 ### 1.2. Install each dependent library and the header files from packagecloud.io
 
-This section instructs how to install each dependent library and the header files from [packagecloud.io](https://packagecloud.io/). 
+This section instructs how to install each dependent library and the header files from [packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable). 
 
-Note: Skip reading this section if you have installed each dependent library and the header files from [GitHub](https://github.com/) in the previous section.
+Note: Skip reading this section if you have installed each dependent library and the header files from [GitHub](https://github.com/yahoojapan) in the previous section.
 
 For DebianStretch or Ubuntu(Bionic Beaver) users, follow the steps below:
 ```bash
@@ -69,14 +68,14 @@ $ sudo yum install git -y
 
 ## 2. Clone the source code from GitHub
 
-Download the **dtor**'s source code from [GitHub](https://github.com/).
+Download the **K2HTPDTOR**'s source code from [GitHub](https://github.com/yahoojapan/k2htp_dtor).
 ```bash
 $ git clone https://github.com/yahoojapan/k2htp_dtor.git
 ```
 
 ## 3. Build and install
 
-Just follow the steps below to build **dtor** and install it. We use [GNU Automake](https://www.gnu.org/software/automake/) to build **dtor**.
+Just follow the steps below to build **K2HTPDTOR** and install it. We use [GNU Automake](https://www.gnu.org/software/automake/) to build **K2HTPDTOR**.
 ```bash
 $ cd k2htp_dtor
 $ sh autogen.sh
@@ -85,7 +84,7 @@ $ make
 $ sudo make install
 ```
 
-After successfully installing **dtor**, you will see the manual page for **dtor**:
+After successfully installing **K2HTPDTOR**, you will see the manual page for **K2HTPDTOR**:
 ```bash
 $ man k2htpdtor
 ```

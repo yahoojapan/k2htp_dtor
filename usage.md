@@ -71,7 +71,39 @@ The character string after "DTOR_TEST_SLAVE_JSON=" in the [test_json_string.data
 ## Operation check
 This operation confirmation is retransmitting the transaction.
 
-### 1. Building and installing
+### 1. Creating a usage environment
+There are two ways to install **K2HTPDTOR** in your environment.  
+One is to download and install the package of **K2HTPDTOR** from [packagecloud.io](https://packagecloud.io/).  
+The other way is to build and install **K2HTPDTOR** from source code yourself.  
+These methods are described below.  
+
+#### Installing packages
+The **K2HTPDTOR** publishes [packages](https://packagecloud.io/app/antpickax/stable/search?q=k2htpdtor) in [packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable) so that anyone can use it.  
+The package of the **K2HTPDTOR** is released in the form of Debian package, RPM package.  
+Since the installation method differs depending on your OS, please check the following procedure and install it.  
+
+##### Debian(Stretch) / Ubuntu(Bionic Beaver)
+```
+$ sudo apt-get update -y
+$ sudo apt-get install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.deb.sh | sudo bash
+$ sudo apt-get install k2htpdtor chmpx
+```
+
+##### Fedora28 / CentOS7.x(6.x)
+```
+$ sudo yum makecache
+$ sudo yum install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh | sudo bash
+$ sudo yum install k2htpdtor chmpx
+```
+
+##### Other OS
+If you are not using the above OS, packages are not prepared and can not be installed directly.  
+In this case, build from the [source code](https://github.com/yahoojapan/k2htp_dtor) described below and install it.
+
+#### Build and install from source code
+For details on how to build and install **K2HTPDTOR** from [source code](https://github.com/yahoojapan/k2htp_dtor), please see [Build](https://k2htpdtor.antpick.ax/build.html).
 
 ### 2. Start the CHMPX server node of the terminating host
 ```

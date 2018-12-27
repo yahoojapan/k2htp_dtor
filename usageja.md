@@ -73,6 +73,41 @@ K2HTPDTORおよびK2HTPDTORSVRをビルドした後で、簡単な動作確認�
 
 ### 1. ビルド成功
 
+### 1. 利用環境構築
+
+**K2HTPDTOR** をご利用の環境にインストールするには、2つの方法があります。  
+ひとつは、[packagecloud.io](https://packagecloud.io/)から **K2HTPDTOR** のパッケージをダウンロードし、インストールする方法です。  
+もうひとつは、ご自身で **K2HTPDTOR** をソースコードからビルドし、インストールする方法です。  
+これらの方法について、以下に説明します。
+
+#### パッケージを使ったインストール
+**K2HTPDTOR** は、誰でも利用できるように[packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable/)で[パッケージ](https://packagecloud.io/app/antpickax/stable/search?q=k2htpdtor)を公開しています。  
+**K2HTPDTOR** のパッケージは、Debianパッケージ、RPMパッケージの形式で公開しています。  
+お使いのOSによりインストール方法が異なりますので、以下の手順を確認してインストールしてください。  
+
+##### Debian(Stretch) / Ubuntu(Bionic Beaver)
+```
+$ sudo apt-get update -y
+$ sudo apt-get install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.deb.sh | sudo bash
+$ sudo apt-get install k2htpdtor chmpx
+```
+
+##### Fedora28 / CentOS7.x(6.x)
+```
+$ sudo yum makecache
+$ sudo yum install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh | sudo bash
+$ sudo yum install k2htpdtor
+```
+
+##### 上記以外のOS
+上述したOS以外をお使いの場合は、パッケージが準備されていないため、直接インストールすることはできません。  
+この場合には、後述の[ソースコード](https://github.com/yahoojapan/k2htp_dtor)からビルドし、インストールするようにしてください。
+
+#### ソースコードからビルド・インストール
+**K2HTPDTOR** を[ソースコード](https://github.com/yahoojapan/k2htp_dtor)からビルドし、インストールする方法は、[ビルド](https://k2htpdtor.antpick.ax/buildja.html)を参照してください。
+
 ### 2. 終端ホストのCHMPXサーバーノードを起動
 ```
 $ chmpx -conf dtor_test_trans_server.ini
