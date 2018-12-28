@@ -23,7 +23,7 @@ This chapter consists of three parts:
 
 ## 1. Install prerequisites
 
-**K2HTPDTOR** primarily depends on **fullock**, **k2hash** and **chmpx**. Each dependent library and the header files are required to build **K2HTPDTOR**. We provide two ways to install them. You can select your favorite one.
+**K2HTPDTOR** primarily depends on [FULLOCK](https://fullock.antpick.ax/index.html), [K2HASH](https://k2hash.antpick.ax/index.html), [CHMPX](https://chmpx.antpick.ax/index.html). Each dependent library and the header files are required to build **K2HTPDTOR**. We provide two ways to install them. You can select your favorite one.
 
 * Use [GitHub](https://github.com/yahoojapan)  
   Install the source code of dependent libraries and the header files. You will **build** them and install them.
