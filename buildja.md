@@ -23,26 +23,26 @@ next_string:
 
 ## 1. ビルド環境の構築
 
-**K2HTPDTOR**は主に、**fullock**、**k2hash**、および**chmpx**に依存します。それぞれの依存ライブラリとヘッダファイルは**K2HTPDTOR**をビルドするために必要です。それぞれの依存ライブラリとヘッダファイルをインストールする方法は2つあります。好きなものを選ぶことができます。
+**K2HTPDTOR**は主に、[FULLOCK](https://fullock.antpick.ax/indexja.html), [K2HASH](https://k2hash.antpick.ax/indexja.html), [CHMPX](https://chmpx.antpick.ax/indexja.html)に依存します。それぞれの依存ライブラリとヘッダファイルは**K2HTPDTOR**をビルドするために必要です。それぞれの依存ライブラリとヘッダファイルをインストールする方法は2つあります。好きなものを選ぶことができます。
 
 * [GitHub](https://github.com/yahoojapan)から依存ファイルをインストール
   依存ライブラリのソースコードとヘッダファイルをインストールします。あなたはそれぞれの依存ライブラリとヘッダファイルをビルドしてインストールします。
-* [packagecloud.io](https://packagecloud.io/)を使用する
+* [packagecloud.io](https://packagecloud.io/antpickax/stable)を使用する
   依存ライブラリのパッケージとヘッダファイルをインストールします。あなたはそれぞれの依存ライブラリとヘッダファイルをインストールするだけです。ライブラリはすでに構築されています。
 
 ### 1.1. GitHubから各依存ライブラリとヘッダファイルをインストール
 
 詳細については以下の文書を読んでください。
 
-* [fullock](https://fullock.antpick.ax/buildja.html)
-* [k2hash](https://k2hash.antpick.ax/buildja.html)
-* [chmpx](https://chmpx.antpick.ax/buildja.html)
+* [FULLOCK](https://fullock.antpick.ax/buildja.html)
+* [K2HASH](https://k2hash.antpick.ax/buildja.html)  
+* [CHMPX](https://chmpx.antpick.ax/buildja.html)  
 
 ### 1.2. packagecloud.ioから各依存ライブラリとヘッダファイルをインストール
 
 このセクションでは、[packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable)から各依存ライブラリとヘッダーファイルをインストールする方法を説明します。
 
-注：前のセクションで各依存ライブラリとGitHubからのヘッダーファイルをインストールした場合は、このセクションを読み飛ばしてください。
+注：前のセクションで各依存ライブラリと[GitHub](https://github.com/yahoojapan)からのヘッダーファイルをインストールした場合は、このセクションを読み飛ばしてください。
 
 DebianStretchまたはUbuntu（Bionic Beaver）をお使いの場合は、以下の手順に従ってください。
 ```bash
@@ -68,7 +68,7 @@ $ sudo yum install git -y
 
 ## 2. GitHubからソースコードを複製する
 
-GitHubから**K2HTPDTOR**の[ソースコード](https://github.com/yahoojapan/k2htp_dtor)をダウンロードしてください。
+[GitHub](https://github.com/yahoojapan)から**K2HTPDTOR**の[ソースコード](https://github.com/yahoojapan/k2htp_dtor)をダウンロードしてください。
 ```bash
 $ git clone https://github.com/yahoojapan/k2htp_dtor.git
 ```
