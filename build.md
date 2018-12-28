@@ -34,9 +34,9 @@ This chapter consists of three parts:
 
 Read the following documents for details:
 
-* [fullock](https://fullock.antpick.ax/build.html)
-* [k2hash](https://k2hash.antpick.ax/build.html)
-* [chmpx](https://chmpx.antpick.ax/build.html)
+* [FULLOCK](https://fullock.antpick.ax/build.html)
+* [K2HASH](https://k2hash.antpick.ax/build.html)
+* [CHMPX](https://chmpx.antpick.ax/build.html)
 
 ### 1.2. Install each dependent library and the header files from packagecloud.io
 
