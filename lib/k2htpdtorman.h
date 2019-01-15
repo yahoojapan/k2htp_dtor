@@ -64,6 +64,7 @@ inline bool find_dtorpbylst(dtorpbylst_t& pbylst, const unsigned char* pbin, siz
 	if(!pbin || 0 == length){
 		return false;
 	}
+	// cppcheck-suppress postfixOperator
 	for(dtorpbylst_t::const_iterator iter = pbylst.begin(); iter != pbylst.end(); iter++){
 		if(length < (*iter)->length){
 			continue;

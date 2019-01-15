@@ -146,6 +146,7 @@ static unsigned char* cvt_escape_sequence(const char* pstr, size_t& length, bool
 				if('x' == pstr[2]){
 					unsigned char	byBuff	= 0x00;
 					int				pos;
+					// cppcheck-suppress arrayIndexThenCheck
 					for(pos = 3; '\0' != pstr[pos] && pos < 5; pos++){
 						if('0' <= pstr[pos] && pstr[pos] <= '9'){
 							byBuff  = byBuff * 16;
@@ -166,6 +167,7 @@ static unsigned char* cvt_escape_sequence(const char* pstr, size_t& length, bool
 				}else if(0 != isdigit(pstr[2])){
 					unsigned char	byBuff	= 0x00;
 					int				pos;
+					// cppcheck-suppress arrayIndexThenCheck
 					for(pos = 2; '\0' != pstr[pos] && pos < 5; pos++){
 						if('0' <= pstr[pos] && pstr[pos] <= '9'){
 							byBuff  = byBuff * 8;
@@ -503,6 +505,8 @@ bool K2HtpDtorManager::LoadConfigrationYaml(const char* config, string& chmpxcon
 		// open configuration file
 		if(NULL == (fp = fopen(config, "r"))){
 			ERR_K2HPRN("Could not open configuration file(%s). errno = %d", config, errno);
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress resourceLeak
 			return false;
 		}
 		// set file to parser
@@ -982,8 +986,7 @@ bool K2HtpDtorManager::Remove(k2h_h k2hhandle)
 		// There is no k2hhandle.
 		WAN_K2HPRN("K2HTPDTOR already does not have k2hash handle(0x%016" PRIx64 ").", k2hhandle);
 	}else{
-		PDTORINFO	pdtor	= dtormap[k2hhandle];
-		pdtor->remove_this	= true;
+		PDTORINFO	pdtor		= dtormap[k2hhandle];
 		if(pdtor){
 			pdtor->remove_this	= true;
 		}
