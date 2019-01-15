@@ -171,6 +171,8 @@ int main(int argc, char** argv)
 	dtorparam_t	params;
 
 	// Parse parameter
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress stlSize
 	if(!ParamParser(argc, argv, params) || 0 == params.size()){
 		PrintUsage(argv[0]);
 		exit(EXIT_FAILURE);
