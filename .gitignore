@@ -3,7 +3,7 @@
 #
 # Copyright 2015 Yahoo Japan corporation.
 #
-# K2HASH TRANSACTION PLUGIN is programable I/F for processing
+# K2HASH TRANSACTION PLUGIN is programmable I/F for processing
 # transaction data from modifying K2HASH data.
 #
 # For the full copyright and license information, please view
@@ -138,6 +138,31 @@ src/k2htpdtorsvr
 tests/results.xml
 tests/k2htpdtorserver
 tests/k2htpdtorclient
+
+#
+# buildutils
+#
+buildutils/custom/*_Makefile
+buildutils/custom/*.yicf
+
+#
+# yahoo build
+#
+x86_64-linux-gcc
+x86_64-linux-gcc/*
+x86_64-linux-gcc.gcov
+x86_64-linux-gcc.gcov/*
+*/x86_64-linux-gcc
+*/x86_64-linux-gcc/*
+*/x86_64-linux-gcc.gcov
+*/x86_64-linux-gcc.gcov/*
+*.gcov
+*.gcno
+*.gcov.html
+rhel.*.depend
+rhel.*.package
+coverage
+coverage/*
 
 #
 # VIM modelines

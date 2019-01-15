@@ -6,18 +6,18 @@ k2htpdtor \- Shared library for K2HASH TRANSACTION PLUGIN.
 \fBlibk2htpdtor.so.*
 .SH DESCRIPTION
 .TP 2
-k2htpdtor is K2HASH DISTRIBUTED TRANSACTION OF REPEATER. This shared library is transaction plugin for k2hash library. The k2hash library has programable I/F for processing transaction data from modifying K2HASH data.
+k2htpdtor is K2HASH DISTRIBUTED TRANSACTION OF REPEATER. This shared library is transaction plugin for k2hash library. The k2hash library has programmable I/F for processing transaction data from modifying K2HASH data.
 .PP
 The k2htpdtor forwards the operation to other servers connecting by CHMPX.
 The k2htpdtor plugin is called by k2hash transaction plugin logic after the operation is occurred by changing the k2hash data.
 .PP
 The k2htpdtor need to get only one parameter for working.
-The basically parameter is the configration file path as same as the file for setting CHMPX on slave side.
+The basically parameter is the configuration file path as same as the file for setting CHMPX on slave side.
 .PP
-The other type, the extended type paraemter is the configuration file for k2hdtor.
-The k2hdtor configration file is INI file  type, and it can have K2HTPDTOR_BROADCAST, K2HTPDTOR_CHMPXCONF, K2HTPDTOR_EXCEPT_KEY and K2HTPDTOR_FILE key in K2HTPDTOR section.
+The other type, the extended type parameter is the configuration file for k2hdtor.
+The k2hdtor configuration file is INI file  type, and it can have K2HTPDTOR_BROADCAST, K2HTPDTOR_CHMPXCONF, K2HTPDTOR_EXCEPT_KEY and K2HTPDTOR_FILE key in K2HTPDTOR section.
 .PP
-.SH CONFIGRATION
+.SH CONFIGURATION
 .IP K2HTPDTOR_BROADCAST 5
 This key means the flag that is whichever the operation message is broadcasting or not.
 .IP K2HTPDTOR_BROADCAST 5
@@ -44,6 +44,6 @@ K2HASH is NoSQL(key value store) library and tools for this library by Yahoo! JA
 k2hash(1) chmpx(1) fullock(3) k2htpdtorsvr(1)
 .SH BUGS
 .TP
-Please report owner and comitter.
+Please report owner and committer.
 .SH AUTHOR
 k2htpdtor has been written by Takeshi Nakatani.

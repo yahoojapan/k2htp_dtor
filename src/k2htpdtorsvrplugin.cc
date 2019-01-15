@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -105,7 +105,7 @@ static void free_chararray(char** pparray)
 }
 
 //---------------------------------------------------------
-// Class methos
+// Class methods
 //---------------------------------------------------------
 bool K2htpSvrPlugin::BlockSignal(int sig)
 {
@@ -179,7 +179,7 @@ void* K2htpSvrPlugin::WatchChildExit(void* param)
 		}else if(-1 > childpid){
 			if(ECHILD != errno){
 				// error
-				MSG_K2HPRN("somthing error occurred during eaiting child exit by errno(%d).", errno);
+				MSG_K2HPRN("something error occurred during waiting child exit by errno(%d).", errno);
 				break;
 			}
 			// [NOTE]
@@ -198,7 +198,7 @@ void* K2htpSvrPlugin::WatchChildExit(void* param)
 
 		// run plugin(run as soon as possible)
 		if(0 < childpid && !pPlugin->RunPlugin()){
-			ERR_K2HPRN("Somwthing error occurred during restarting plugins, but continue...");
+			ERR_K2HPRN("Something error occurred during restarting plugins, but continue...");
 		}
 	}
 	pthread_exit(NULL);
@@ -206,7 +206,7 @@ void* K2htpSvrPlugin::WatchChildExit(void* param)
 }
 
 //---------------------------------------------------------
-// Methos
+// Methods
 //---------------------------------------------------------
 K2htpSvrPlugin::K2htpSvrPlugin(void) : lockval(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED), thread_exit(true), run_thread_status(false), BaseParam(""), FileName(""), PipeFilePath(""), PluginArgvs(NULL), PluginEnvs(NULL), PluginPid(CHM_INVALID_PID), PipeInput(DTOR_INVALID_HANDLE), ExitStatus(0), ExitCount(0), AutoRestart(false)
 {
@@ -573,7 +573,7 @@ bool K2htpSvrPlugin::RunPlugin(void)
 bool K2htpSvrPlugin::StopPlugin(void)
 {
 	if(CHM_INVALID_PID == PluginPid){
-		WAN_K2HPRN("pid is not runnning status, so already stop.");
+		WAN_K2HPRN("pid is not running status, so already stop.");
 		return true;
 	}
 
@@ -637,7 +637,7 @@ bool K2htpSvrPlugin::Write(const unsigned char* pdata, size_t length)
 		return false;
 	}
 	if(DTOR_INVALID_HANDLE == PipeInput){
-		ERR_K2HPRN("The input pipe for plugin is invaid, could not write data to plugin.");
+		ERR_K2HPRN("The input pipe for plugin is invalid, could not write data to plugin.");
 		return false;
 	}
 

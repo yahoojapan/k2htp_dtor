@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -63,7 +63,7 @@ extern char k2htpdtor_commit_hash[];
 // 
 // This function is called from k2hash library at each one transaction doing.
 // You can do anything here for one transaction. If you set transaction file
-// path in k2h_trans_cntl function, you can get it's file discripter by calling
+// path in k2h_trans_cntl function, you can get it's file descriptor by calling
 // K2HTransManager::GetArchiveFd() function.
 // When you get transaction fd, it is locked automatically by k2hash library.
 // Thus it is safe for multi thread.
@@ -147,7 +147,7 @@ bool k2h_trans(k2h_h handle, PBCOM pBinCom)
 	//
 	// [TODO]
 	// The Routing mode is always false, it maybe correct.
-	// But if you need to control routing mode, you have to read the mode in configration file and keep
+	// But if you need to control routing mode, you have to read the mode in configuration file and keep
 	// it in dtor mapping data.
 	//
 	long	preceivercnt = 0L;
@@ -164,7 +164,7 @@ bool k2h_trans(k2h_h handle, PBCOM pBinCom)
 	}
 
 	if(0L == preceivercnt){
-		ERR_K2HPRN("K2HTPDTOR there is no reciever for msgid(0x%016" PRIx64 "), chmpx handle(0x%016" PRIx64 "), k2hash handle(0x%016" PRIx64 ").", msgid, chmpxhandle, handle);
+		ERR_K2HPRN("K2HTPDTOR there is no receiver for msgid(0x%016" PRIx64 "), chmpx handle(0x%016" PRIx64 "), k2hash handle(0x%016" PRIx64 ").", msgid, chmpxhandle, handle);
 		return false;
 	}
 	return true;
@@ -222,7 +222,7 @@ const char* k2h_trans_version(void)
 //					in this function.(over write this value)
 //					If this value is not NULL, in the k2h_trans function you can get
 //					file pointer to this file path by K2HTransManager::GetArchiveFd()
-//					function. Then this archive fd is locked and opend, so you
+//					function. Then this archive fd is locked and opened, so you
 //					can only push data to it.
 //					If isEnable is false, you do not have to care this value.
 // byTransPrefix	When isEnable is only true, this value means the queue name

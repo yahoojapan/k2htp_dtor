@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -205,7 +205,7 @@ bool K2HtpSvrManager::Initialize(PK2HTPDTORSVRINFO pInfo)
 
 	// Join chmpx server side
 	if(!chmpxobj.InitializeOnServer(pInfo->conffile.c_str(), true)){		// auto rejoin
-		ERR_K2HPRN("Could not join chmpx by configration file %s.", pInfo->conffile.c_str());
+		ERR_K2HPRN("Could not join chmpx by configuration file %s.", pInfo->conffile.c_str());
 		Clean();
 		return false;
 	}
@@ -242,7 +242,7 @@ bool K2HtpSvrManager::Processing(void)
 			continue;
 		}
 		if(!pbody){
-			ERR_K2HPRN("NULL body data recieved.");
+			ERR_K2HPRN("NULL body data received.");
 			CHM_Free(pComPkt);
 			continue;
 		}
@@ -251,7 +251,7 @@ bool K2HtpSvrManager::Processing(void)
 		// check received data
 		PBCOM	pBinCom = reinterpret_cast<PBCOM>(pbody);
 		if(length != scom_total_length(pBinCom->scom)){
-			ERR_K2HPRN("Length(%zu) of recieved message body is wrong(should be %zu).", length, scom_total_length(pBinCom->scom));
+			ERR_K2HPRN("Length(%zu) of received message body is wrong(should be %zu).", length, scom_total_length(pBinCom->scom));
 			CHM_Free(pComPkt);
 			CHM_Free(pbody);
 			continue;
@@ -280,7 +280,7 @@ bool K2HtpSvrManager::Processing(void)
 
 		// do processing...
 		if(pfilefd){
-			// output file(write recieved data without changing)
+			// output file(write received data without changing)
 			if(!pfilefd->Write(pbody, length)){
 				ERR_K2HPRN("Failed to write to output file.");
 			}

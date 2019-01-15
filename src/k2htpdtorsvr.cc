@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -68,8 +68,8 @@ static void PrintUsage(char* argv)
 	cout << endl;
 	cout << "-h                     help display" << endl;
 	cout << "-ver                   version display" << endl;
-	cout << "-conf <path>           configration file(.ini .yaml .json) path" << endl;
-	cout << "-json <json string>    configration json string" << endl;
+	cout << "-conf <path>           configuration file(.ini .yaml .json) path" << endl;
+	cout << "-json <json string>    configuration json string" << endl;
 	cout << "-d <debug level>       debugging level: ERR(default) / WAN / INFO(MSG) / SILENT" << endl;
 	cout << "-dlog <file path>      output file for debugging message(default stderr)" << endl;
 	cout << endl;
@@ -83,7 +83,7 @@ static void PrintVersion(FILE* stream)
 		"\n"
 		"Copyright(C) 2015 Yahoo Japan Corporation.\n"
 		"\n"
-		"K2HASH TRANSACTION PLUGIN is programable I/F for processing\n"
+		"K2HASH TRANSACTION PLUGIN is programmable I/F for processing\n"
 		"transaction data from modifying K2HASH data.\n"
 		"\n";
 
@@ -222,7 +222,7 @@ int main(int argc, char** argv)
 	// make and check info from conf file
 	K2HTPDTORSVRINFO	info;
 	if(!ParseK2htpdtorsvrConfigration(config.c_str(), &info)){
-		ERR_K2HPRN("Somthing wrong in conf file(%s).", config.c_str());
+		ERR_K2HPRN("Something wrong in conf file(%s).", config.c_str());
 		exit(EXIT_FAILURE);
 	}
 
