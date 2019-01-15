@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -109,7 +109,7 @@ typedef struct dtor_info{
 
 		for(tidmsgidmap_t::iterator iter = msgidmap.begin(); iter != msgidmap.end(); msgidmap.erase(iter++)){
 			if(!chmpx_close(chmpxhandle, iter->second)){
-				ERR_K2HPRN("K2HTPDTOR could not close chmpx msgid(0x%016" PRIx64 ") in chmpx hanlde(0x%016" PRIx64 "), but continue...", iter->second, chmpxhandle);
+				ERR_K2HPRN("K2HTPDTOR could not close chmpx msgid(0x%016" PRIx64 ") in chmpx handle(0x%016" PRIx64 "), but continue...", iter->second, chmpxhandle);
 			}
 		}
 		msgidmap.clear();

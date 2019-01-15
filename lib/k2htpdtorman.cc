@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -255,7 +255,7 @@ static bool parse_except_types(const char* pexcepts, excepttypemap_t& excmap)
 }
 
 //---------------------------------------------------------
-// K2HtpDtorManager : Class valiables
+// K2HtpDtorManager : Class variables
 //---------------------------------------------------------
 const int	K2HtpDtorManager::SLEEP_MS;
 const int	K2HtpDtorManager::WAIT_EVENT_MAX;
@@ -276,7 +276,7 @@ void* K2HtpDtorManager::WorkerThread(void* param)
 {
 	K2HtpDtorManager*	pDtorMan = reinterpret_cast<K2HtpDtorManager*>(param);
 	if(!pDtorMan){
-		ERR_K2HPRN("paraemter is wrong.");
+		ERR_K2HPRN("parameter is wrong.");
 		pthread_exit(NULL);
 	}
 
@@ -399,7 +399,7 @@ bool K2HtpDtorManager::LoadConfigrationIni(const char* filepath, string& chmpxco
 	dtorstrlst_t	allfiles;
 	allfiles.push_back(filepath);
 	if(!K2HtpDtorManager::ReadIniFileContents(filepath, linelst, allfiles)){
-		ERR_K2HPRN("Could not load configration file(%s) contents.", filepath);
+		ERR_K2HPRN("Could not load configuration file(%s) contents.", filepath);
 		return false;
 	}
 
@@ -717,7 +717,7 @@ bool K2HtpDtorManager::LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, stri
 						result = false;
 					}
 				}else{
-					// Found Top Level Keywards, start to loading
+					// Found Top Level Keywords, start to loading
 					if(0 == strcasecmp(CFG_K2HTPDTOR_SEC_STR, reinterpret_cast<const char*>(yevent.data.scalar.value))){
 						if(is_set_dtor){
 							MSG_K2HPRN("Got yaml scalar event in loop, but already loading %s. Thus stacks this event.", CFG_K2HTPDTOR_SEC_STR);
@@ -733,7 +733,7 @@ bool K2HtpDtorManager::LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, stri
 						}
 
 					}else{
-						MSG_K2HPRN("Got yaml scalar event in loop, but unknown keyward(%s) for me. Thus stacks this event.", reinterpret_cast<const char*>(yevent.data.scalar.value));
+						MSG_K2HPRN("Got yaml scalar event in loop, but unknown keyword(%s) for me. Thus stacks this event.", reinterpret_cast<const char*>(yevent.data.scalar.value));
 						if(!other_stack.add(yevent.type)){
 							result = false;
 						}
@@ -910,7 +910,7 @@ K2HtpDtorManager::~K2HtpDtorManager()
 
 	// remove dtor manually
 	if(!UpdateWatch(true)){
-		WAN_K2HPRN("Somthing wrong to remove all dtor list.");
+		WAN_K2HPRN("Something wrong to remove all dtor list.");
 	}
 
 	// close epoll
@@ -920,7 +920,7 @@ K2HtpDtorManager::~K2HtpDtorManager()
 bool K2HtpDtorManager::Add(k2h_h k2hhandle, const char* pchmpxconf)
 {
 	if(K2H_INVALID_HANDLE == k2hhandle || ISEMPTYSTR(pchmpxconf)){
-		ERR_K2HPRN("Paraemters are wrong.");
+		ERR_K2HPRN("Parameters are wrong.");
 		return false;
 	}
 
@@ -972,7 +972,7 @@ bool K2HtpDtorManager::Add(k2h_h k2hhandle, const char* pchmpxconf)
 bool K2HtpDtorManager::Remove(k2h_h k2hhandle)
 {
 	if(K2H_INVALID_HANDLE == k2hhandle){
-		ERR_K2HPRN("Paraemter is wrong.");
+		ERR_K2HPRN("Parameter is wrong.");
 		return false;
 	}
 
@@ -1008,7 +1008,7 @@ bool K2HtpDtorManager::UpdateWatch(bool force)
 	while(!fullock::flck_trylock_noshared_mutex(&LockVal));		// MUTEX LOCK
 
 	// [NOTE]
-	// When dtor remove(delete), call chmpx dectructor.
+	// When dtor remove(delete), call chmpx destructor.
 	// Thus it call k2hash for chmpx dtor removing, and reentrant and dead locking.
 	// So we removing dtor after unlock mutex.
 	//
@@ -1028,10 +1028,10 @@ bool K2HtpDtorManager::UpdateWatch(bool force)
 			if(DTOR_INVALID_HANDLE != pdtor->inotify_fd || DTOR_INVALID_HANDLE != pdtor->watch_fd){
 				// remove inotify fd from epoll
 				if(-1 == epoll_ctl(epollfd, EPOLL_CTL_DEL, pdtor->inotify_fd, NULL)){
-					ERR_K2HPRN("Fialed to remove inotify fd(%d) from epoll fd(%d) by errno(%d), but continue...", pdtor->inotify_fd, epollfd, errno);
+					ERR_K2HPRN("Failed to remove inotify fd(%d) from epoll fd(%d) by errno(%d), but continue...", pdtor->inotify_fd, epollfd, errno);
 				}
 				if(-1 == inotify_rm_watch(pdtor->inotify_fd, pdtor->watch_fd)){
-					ERR_K2HPRN("Fialed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", pdtor->watch_fd, pdtor->inotify_fd, errno);
+					ERR_K2HPRN("Failed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", pdtor->watch_fd, pdtor->inotify_fd, errno);
 				}
 				FLCK_CLOSE(pdtor->watch_fd);
 				FLCK_CLOSE(pdtor->inotify_fd);
@@ -1081,7 +1081,7 @@ bool K2HtpDtorManager::UpdateWatch(bool force)
 							if(-1 == epoll_ctl(epollfd, EPOLL_CTL_ADD, pdtor->inotify_fd, &epoolev)){
 								ERR_K2HPRN("Could not add inotify fd(%d) and watch fd(%d) to epoll fd(%d) for %s by errno(%d).", pdtor->inotify_fd, pdtor->watch_fd, epollfd, pdtor->outputfile.c_str(), errno);
 								if(-1 == inotify_rm_watch(pdtor->inotify_fd, pdtor->watch_fd)){
-									ERR_K2HPRN("Fialed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", pdtor->watch_fd, pdtor->inotify_fd, errno);
+									ERR_K2HPRN("Failed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", pdtor->watch_fd, pdtor->inotify_fd, errno);
 								}
 								K2H_CLOSE(pdtor->watch_fd);
 								K2H_CLOSE(pdtor->inotify_fd);
@@ -1196,10 +1196,10 @@ bool K2HtpDtorManager::CheckWatch(int inotifyfd)
 		if(pdtor && !pdtor->remove_this && pdtor->outputfile == tgfile){
 			// remove inotify fd from epoll
 			if(-1 == epoll_ctl(epollfd, EPOLL_CTL_DEL, pdtor->inotify_fd, NULL)){
-				ERR_K2HPRN("Fialed to remove inotify fd(%d) from epoll fd(%d) by errno(%d), but continue...", pdtor->inotify_fd, epollfd, errno);
+				ERR_K2HPRN("Failed to remove inotify fd(%d) from epoll fd(%d) by errno(%d), but continue...", pdtor->inotify_fd, epollfd, errno);
 			}
 			if(-1 == inotify_rm_watch(pdtor->inotify_fd, pdtor->watch_fd)){
-				ERR_K2HPRN("Fialed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", pdtor->watch_fd, pdtor->inotify_fd, errno);
+				ERR_K2HPRN("Failed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", pdtor->watch_fd, pdtor->inotify_fd, errno);
 			}
 			FLCK_CLOSE(pdtor->watch_fd);
 			FLCK_CLOSE(pdtor->inotify_fd);
@@ -1233,7 +1233,7 @@ bool K2HtpDtorManager::CheckWatch(int inotifyfd)
 bool K2HtpDtorManager::GetChmpxMsgId(k2h_h k2hhandle, chmpx_h& chmpxhandle, msgid_t& msgid, bool& isbroadcast)
 {
 	if(K2H_INVALID_HANDLE == k2hhandle){
-		ERR_K2HPRN("Paraemter is wrong.");
+		ERR_K2HPRN("Parameter is wrong.");
 		return false;
 	}
 
@@ -1278,7 +1278,7 @@ bool K2HtpDtorManager::GetChmpxMsgId(k2h_h k2hhandle, chmpx_h& chmpxhandle, msgi
 bool K2HtpDtorManager::IsExceptKey(k2h_h k2hhandle, const unsigned char* pkey, size_t length)
 {
 	if(K2H_INVALID_HANDLE == k2hhandle || ISEMPTYSTR(pkey) || 0 == length){
-		ERR_K2HPRN("Paraemters are wrong.");
+		ERR_K2HPRN("Parameters are wrong.");
 		return false;
 	}
 
@@ -1301,7 +1301,7 @@ bool K2HtpDtorManager::IsExceptKey(k2h_h k2hhandle, const unsigned char* pkey, s
 bool K2HtpDtorManager::IsExceptType(k2h_h k2hhandle, long type)
 {
 	if(K2H_INVALID_HANDLE == k2hhandle){
-		ERR_K2HPRN("Paraemters are wrong.");
+		ERR_K2HPRN("Parameters are wrong.");
 		return false;
 	}
 
@@ -1354,7 +1354,7 @@ bool K2HtpDtorManager::IsExcept(k2h_h k2hhandle, const unsigned char* pkey, size
 int K2HtpDtorManager::GetOutputFd(k2h_h k2hhandle, bool is_lock)
 {
 	if(K2H_INVALID_HANDLE == k2hhandle){
-		ERR_K2HPRN("Paraemter is wrong.");
+		ERR_K2HPRN("Parameter is wrong.");
 		return DTOR_INVALID_HANDLE;
 	}
 

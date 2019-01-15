@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -38,16 +38,16 @@ static volatile bool	is_doing_loop = true;
 // Functions
 //---------------------------------------------------------
 //	[Usage]
-//	prgname -f <chmpx configration file>
+//	prgname -f <chmpx configuration file>
 //
 static void PrintUsage(char* argv)
 {
 	string	prgname = argv ? basename(argv) : "k2htpdtorserver";
 
 	cout << "[Usage]" << endl;
-	cout << prgname << " -f <chmpx configration file>" << endl;
+	cout << prgname << " -f <chmpx configuration file>" << endl;
 	cout << endl;
-	cout << "-f <chmpx configration file>  specified configration file for chmpx" << endl;
+	cout << "-f <chmpx configuration file>  specified configuration file for chmpx" << endl;
 	cout << endl;
 }
 
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 	// Join chmpx
 	ChmCntrl	ChmpxObj;
 	if(!ChmpxObj.InitializeOnServer(conffile.c_str(), true)){		// auto rejoin
-		ERR_CHMPRN("Could not join chmpx by configration file %s.", conffile.c_str());
+		ERR_CHMPRN("Could not join chmpx by configuration file %s.", conffile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
-	// Recieve and print
+	// Receive and print
 	while(is_doing_loop){
 		PCOMPKT			pComPkt	= NULL;
 		unsigned char*	pbody	= NULL;
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
 		if(!pComPkt){
 			MSG_CHMPRN("Timeouted 1s for waiting message, so continue to waiting.");
 		}else if(!pbody){
-			ERR_CHMPRN("NULL body data recieved.");
+			ERR_CHMPRN("NULL body data received.");
 			CHM_Free(pComPkt);
 			break;
 		}else{
@@ -178,14 +178,14 @@ int main(int argc, char** argv)
 
 			// check
 			if(length != scom_total_length(pBinCom->scom)){
-				ERR_CHMPRN("Length(%zu) of recieved message body is wrong(should be %zu).", length, scom_total_length(pBinCom->scom));
+				ERR_CHMPRN("Length(%zu) of received message body is wrong(should be %zu).", length, scom_total_length(pBinCom->scom));
 				CHM_Free(pComPkt);
 				CHM_Free(pbody);
 				break;
 			}
 
 			// output
-			string	Mode	= &(pBinCom->scom.szCommand[1]);			// First charactor is "\n", so skip it
+			string	Mode	= &(pBinCom->scom.szCommand[1]);			// First character is "\n", so skip it
 			char*	pkey	= 0UL < pBinCom->scom.key_length	? GetPrintableString(&(pBinCom->byData[pBinCom->scom.key_pos]), pBinCom->scom.key_length)		: NULL;
 			char*	pval	= 0UL < pBinCom->scom.val_length	? GetPrintableString(&(pBinCom->byData[pBinCom->scom.val_pos]), pBinCom->scom.val_length)		: NULL;
 			char*	psubkey	= 0UL < pBinCom->scom.skey_length	? GetPrintableString(&(pBinCom->byData[pBinCom->scom.skey_pos]), pBinCom->scom.skey_length)		: NULL;

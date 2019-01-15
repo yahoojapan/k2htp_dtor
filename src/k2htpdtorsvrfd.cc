@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -65,7 +65,7 @@ bool K2htpSvrFd::AddWatch(int epollfd, const string& filepath, int& inotify_fd, 
 	// add watching path
 	//
 	// [NOTE]
-	// IN_DELETE(_SELF) does not occur if the file is removied. :-(
+	// IN_DELETE(_SELF) does not occur if the file is removed. :-(
 	// So we use IN_ATTRIB instead of it.
 	//
 	if(DTOR_INVALID_HANDLE == (watch_fd = inotify_add_watch(inotify_fd, filepath.c_str(), IN_DELETE | IN_MOVE | IN_DELETE_SELF | IN_MOVE_SELF | IN_ATTRIB))){
@@ -84,7 +84,7 @@ bool K2htpSvrFd::AddWatch(int epollfd, const string& filepath, int& inotify_fd, 
 		ERR_K2HPRN("Could not add inotify fd(%d) and watch fd(%d) to epoll fd(%d) for %s by errno(%d).", inotify_fd, watch_fd, epollfd, filepath.c_str(), errno);
 
 		if(-1 == inotify_rm_watch(inotify_fd, watch_fd)){
-			ERR_K2HPRN("Fialed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", watch_fd, inotify_fd, errno);
+			ERR_K2HPRN("Failed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", watch_fd, inotify_fd, errno);
 		}
 		K2H_CLOSE(watch_fd);
 		K2H_CLOSE(inotify_fd);
@@ -104,12 +104,12 @@ bool K2htpSvrFd::DeleteWatch(int epollfd, int& inotify_fd, int& watch_fd)
 
 	if(DTOR_INVALID_HANDLE != inotify_fd){
 		if(-1 == epoll_ctl(epollfd, EPOLL_CTL_DEL, inotify_fd, NULL)){
-			ERR_K2HPRN("Fialed to remove inotify fd(%d) from epoll fd(%d) by errno(%d), but continue...", inotify_fd, epollfd, errno);
+			ERR_K2HPRN("Failed to remove inotify fd(%d) from epoll fd(%d) by errno(%d), but continue...", inotify_fd, epollfd, errno);
 		}
 	}
 	if(DTOR_INVALID_HANDLE != inotify_fd && DTOR_INVALID_HANDLE != watch_fd){
 		if(-1 == inotify_rm_watch(inotify_fd, watch_fd)){
-			ERR_K2HPRN("Fialed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", watch_fd, inotify_fd, errno);
+			ERR_K2HPRN("Failed to remove watch fd(%d) from inotify fd(%d) by errno(%d), but continue...", watch_fd, inotify_fd, errno);
 		}
 	}
 	K2H_CLOSE(watch_fd);
@@ -190,7 +190,7 @@ void* K2htpSvrFd::WorkerThread(void* param)
 {
 	K2htpSvrFd*	pSvrFdObj = reinterpret_cast<K2htpSvrFd*>(param);
 	if(!pSvrFdObj){
-		ERR_K2HPRN("paraemter is wrong.");
+		ERR_K2HPRN("parameter is wrong.");
 		pthread_exit(NULL);
 	}
 
@@ -231,7 +231,7 @@ void* K2htpSvrFd::WorkerThread(void* param)
 					}
 					// delete watch file
 					if(!K2htpSvrFd::DeleteWatch(epollfd, inotify_fd, watch_fd)){
-						ERR_K2HPRN("Fialed to remove watch file(%s) from epoll, but continue...", pSvrFdObj->filepath.c_str());
+						ERR_K2HPRN("Failed to remove watch file(%s) from epoll, but continue...", pSvrFdObj->filepath.c_str());
 					}
 				}
 			}
@@ -251,7 +251,7 @@ void* K2htpSvrFd::WorkerThread(void* param)
 	// remove watch file and close epoll
 	if(DTOR_INVALID_HANDLE != inotify_fd){
 		if(!K2htpSvrFd::DeleteWatch(epollfd, inotify_fd, watch_fd)){
-			ERR_K2HPRN("Fialed to remove watch file(%s) from epoll, but continue...", pSvrFdObj->filepath.c_str());
+			ERR_K2HPRN("Failed to remove watch file(%s) from epoll, but continue...", pSvrFdObj->filepath.c_str());
 		}else{
 			MSG_K2HPRN("Succeed deleting file(%s) watch and break loop to exiting thread.", pSvrFdObj->filepath.c_str());
 		}

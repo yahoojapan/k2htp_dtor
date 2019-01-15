@@ -3,7 +3,7 @@
 #
 # Copyright 2015 Yahoo Japan Corporation.
 #
-# K2HASH TRANSACTION PLUGIN is programable I/F for processing
+# K2HASH TRANSACTION PLUGIN is programmable I/F for processing
 # transaction data from modifying K2HASH data.
 #
 # For the full copyright and license information, please view

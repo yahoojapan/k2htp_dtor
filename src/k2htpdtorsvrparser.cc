@@ -3,7 +3,7 @@
  *
  * Copyright 2015 Yahoo Japan Corporation.
  *
- * K2HASH TRANSACTION PLUGIN is programable I/F for processing
+ * K2HASH TRANSACTION PLUGIN is programmable I/F for processing
  * transaction data from modifying K2HASH data.
  *
  * For the full copyright and license information, please view
@@ -199,7 +199,7 @@ static bool ParseK2htpdtorsvrIniFile(const char* conffile, PK2HTPDTORSVRINFO pIn
 	strlst_t	lines;
 	strlst_t	files;
 	if(!read_ini_file_contents(conffile, lines, files)){
-		ERR_K2HPRN("Failed to load oncfigration ini file(%s)", conffile);
+		ERR_K2HPRN("Failed to load configuration ini file(%s)", conffile);
 		return false;
 	}
 
@@ -252,7 +252,7 @@ static bool ParseK2htpdtorsvrIniFile(const char* conffile, PK2HTPDTORSVRINFO pIn
 						pInfo->k2hash_type_mem = false;
 						pInfo->k2hash_type_tmp = false;
 					}else{
-						WAN_K2HPRN("keyworad(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
+						WAN_K2HPRN("keyword(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
 					}
 
 				}else if(INI_K2HDTORSVR_K2HFILE_STR == key){
@@ -270,7 +270,7 @@ static bool ParseK2htpdtorsvrIniFile(const char* conffile, PK2HTPDTORSVRINFO pIn
 					}else if(INI_K2HDTORSVR_NO1_VAL_STR == value || INI_K2HDTORSVR_NO2_VAL_STR == value || INI_K2HDTORSVR_OFF_VAL_STR == value){
 						pInfo->k2hash_fullmap = false;
 					}else{
-						WAN_K2HPRN("keyworad(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
+						WAN_K2HPRN("keyword(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
 					}
 
 				}else if(INI_K2HDTORSVR_K2HINIT_STR == key){
@@ -282,7 +282,7 @@ static bool ParseK2htpdtorsvrIniFile(const char* conffile, PK2HTPDTORSVRINFO pIn
 					}else if(INI_K2HDTORSVR_NO1_VAL_STR == value || INI_K2HDTORSVR_NO2_VAL_STR == value || INI_K2HDTORSVR_OFF_VAL_STR == value){
 						pInfo->k2hash_init = false;
 					}else{
-						WAN_K2HPRN("keyworad(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
+						WAN_K2HPRN("keyword(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
 					}
 
 				}else if(INI_K2HDTORSVR_K2HMASKBIT_STR == key){
@@ -310,7 +310,7 @@ static bool ParseK2htpdtorsvrIniFile(const char* conffile, PK2HTPDTORSVRINFO pIn
 					}else{
 						// not json string, thus it is a file
 						if(!cvt_path_real_path(value.c_str(), pInfo->trans_ini_file)){
-							WAN_K2HPRN("keyworad(%s) has value(%s) in main section(%s), but does not file exist.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
+							WAN_K2HPRN("keyword(%s) has value(%s) in main section(%s), but does not file exist.", key.c_str(), value.c_str(), INI_K2HDTORSVR_MAIN_SEC_STR);
 						}
 					}
 				}else if(INI_K2HDTORSVR_DTORTHREADCNT_STR == key){
@@ -429,7 +429,7 @@ static bool ParseK2htpdtorsvrYamlContents(yaml_parser_t& yparser, PK2HTPDTORSVRI
 						pInfo->k2hash_type_mem = false;
 						pInfo->k2hash_type_tmp = false;
 					}else{
-						WAN_K2HPRN("keyworad(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), pvalue, INI_K2HDTORSVR_MAIN_SEC_STR);
+						WAN_K2HPRN("keyword(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), pvalue, INI_K2HDTORSVR_MAIN_SEC_STR);
 					}
 
 				}else if(0 == strcasecmp(INI_K2HDTORSVR_K2HFILE_STR, key.c_str())){
@@ -448,7 +448,7 @@ static bool ParseK2htpdtorsvrYamlContents(yaml_parser_t& yparser, PK2HTPDTORSVRI
 					}else if(0 == strcasecmp(INI_K2HDTORSVR_NO1_VAL_STR, pvalue) || 0 == strcasecmp(INI_K2HDTORSVR_NO2_VAL_STR, pvalue) || 0 == strcasecmp(INI_K2HDTORSVR_OFF_VAL_STR, pvalue)){
 						pInfo->k2hash_fullmap = false;
 					}else{
-						WAN_K2HPRN("keyworad(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), pvalue, INI_K2HDTORSVR_MAIN_SEC_STR);
+						WAN_K2HPRN("keyword(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), pvalue, INI_K2HDTORSVR_MAIN_SEC_STR);
 					}
 
 				}else if(0 == strcasecmp(INI_K2HDTORSVR_K2HINIT_STR, key.c_str())){
@@ -460,7 +460,7 @@ static bool ParseK2htpdtorsvrYamlContents(yaml_parser_t& yparser, PK2HTPDTORSVRI
 					}else if(0 == strcasecmp(INI_K2HDTORSVR_NO1_VAL_STR, pvalue) || 0 == strcasecmp(INI_K2HDTORSVR_NO2_VAL_STR, pvalue) || 0 == strcasecmp(INI_K2HDTORSVR_OFF_VAL_STR, pvalue)){
 						pInfo->k2hash_init = false;
 					}else{
-						WAN_K2HPRN("keyworad(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), pvalue, INI_K2HDTORSVR_MAIN_SEC_STR);
+						WAN_K2HPRN("keyword(%s)'s value(%s) in main section(%s) is unknown value, so skip it.", key.c_str(), pvalue, INI_K2HDTORSVR_MAIN_SEC_STR);
 					}
 
 				}else if(0 == strcasecmp(INI_K2HDTORSVR_K2HMASKBIT_STR, key.c_str())){
@@ -488,7 +488,7 @@ static bool ParseK2htpdtorsvrYamlContents(yaml_parser_t& yparser, PK2HTPDTORSVRI
 					}else{
 						// not json string, thus it is a file
 						if(!cvt_path_real_path(reinterpret_cast<const char*>(yevent.data.scalar.value), pInfo->trans_ini_file)){
-							WAN_K2HPRN("keyworad(%s) has value(%s) in main section(%s), but does not file exist.", key.c_str(), reinterpret_cast<const char*>(yevent.data.scalar.value), INI_K2HDTORSVR_MAIN_SEC_STR);
+							WAN_K2HPRN("keyword(%s) has value(%s) in main section(%s), but does not file exist.", key.c_str(), reinterpret_cast<const char*>(yevent.data.scalar.value), INI_K2HDTORSVR_MAIN_SEC_STR);
 						}
 					}
 
@@ -711,7 +711,7 @@ static bool ParseK2htpdtorsvrYamlTopLevel(yaml_parser_t& yparser, PK2HTPDTORSVRI
 						result = false;
 					}
 				}else{
-					// Found Top Level Keywards, start to loading
+					// Found Top Level Keywords, start to loading
 					if(0 == strcasecmp(INI_K2HDTORSVR_MAIN_STR, reinterpret_cast<const char*>(yevent.data.scalar.value))){
 						if(is_set_main){
 							MSG_K2HPRN("Got yaml scalar event in loop, but already loading %s. Thus stacks this event.", INI_K2HDTORSVR_MAIN_STR);
@@ -727,7 +727,7 @@ static bool ParseK2htpdtorsvrYamlTopLevel(yaml_parser_t& yparser, PK2HTPDTORSVRI
 						}
 
 					}else{
-						MSG_K2HPRN("Got yaml scalar event in loop, but unknown keyward(%s) for me. Thus stacks this event.", reinterpret_cast<const char*>(yevent.data.scalar.value));
+						MSG_K2HPRN("Got yaml scalar event in loop, but unknown keyword(%s) for me. Thus stacks this event.", reinterpret_cast<const char*>(yevent.data.scalar.value));
 						if(!other_stack.add(yevent.type)){
 							result = false;
 						}

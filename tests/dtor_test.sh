@@ -4,7 +4,7 @@
 #
 # Copyright 2015 Yahoo Japan Corporation.
 #
-# K2HASH TRANSACTION PLUGIN is programable I/F for processing
+# K2HASH TRANSACTION PLUGIN is programmable I/F for processing
 # transaction data from modifying K2HASH data.
 #
 # For the full copyright and license information, please view
@@ -16,13 +16,60 @@
 #
 
 ##############################################################
+### Make result xml function
+###
+### Usage: put_result_xml <result:OK/NG> <output file path>
+###
+put_result_xml_func()
+{
+	if [ $# -ne 2 ]; then
+		return 1
+	fi
+	TESTRESULT=$1
+	XMLOUTPUTFILE=$2
+
+	if [ "X$XMLOUTPUTFILE" != "X" ]; then
+		echo "<?xml version=\"1.0\" encoding='ISO-8859-1' standalone='yes' ?>"	> $XMLOUTPUTFILE
+		echo "<TestRun>"								>> $XMLOUTPUTFILE
+
+		if [ "X$TESTRESULT" != "XOK" ]; then
+			echo "  <FailedTests>"						>> $XMLOUTPUTFILE
+			echo "    <Test id=\"1\">"					>> $XMLOUTPUTFILE
+			echo "      <Name>Test Script</Name>"		>> $XMLOUTPUTFILE
+			echo "    </Test>"							>> $XMLOUTPUTFILE
+			echo "  </FailedTests>"						>> $XMLOUTPUTFILE
+			echo "  <Statistics>"						>> $XMLOUTPUTFILE
+			echo "    <Tests>1</Tests>"					>> $XMLOUTPUTFILE
+			echo "    <FailuresTotal>1</FailuresTotal>"	>> $XMLOUTPUTFILE
+			echo "    <Errors>1</Errors>"				>> $XMLOUTPUTFILE
+			echo "    <Failures>1</Failures>"			>> $XMLOUTPUTFILE
+			echo "  </Statistics>"						>> $XMLOUTPUTFILE
+		else
+			echo "  <SuccessfulTests>"					>> $XMLOUTPUTFILE
+			echo "    <Test id=\"1\">"					>> $XMLOUTPUTFILE
+			echo "      <Name>TestScript</Name>"		>> $XMLOUTPUTFILE
+			echo "    </Test>"							>> $XMLOUTPUTFILE
+			echo "  </SuccessfulTests>"					>> $XMLOUTPUTFILE
+			echo "  <Statistics>"						>> $XMLOUTPUTFILE
+			echo "    <Tests>1</Tests>"					>> $XMLOUTPUTFILE
+			echo "    <FailuresTotal>0</FailuresTotal>"	>> $XMLOUTPUTFILE
+			echo "    <Errors>0</Errors>"				>> $XMLOUTPUTFILE
+			echo "    <Failures>0</Failures>"			>> $XMLOUTPUTFILE
+			echo "  </Statistics>"						>> $XMLOUTPUTFILE
+		fi
+
+		echo "</TestRun>"								>> $XMLOUTPUTFILE
+	fi
+}
+
+##############################################################
 ## library path & programs path
 ##############################################################
 K2HTPSCRIPTDIR=`dirname $0`
 if [ "X${SRCTOP}" = "X" ]; then
 	SRCTOP=`cd ${K2HTPSCRIPTDIR}/..; pwd`
 else
-	K2HTPSCRIPTDIR=`cd -P ${SRTOP}/tests; pwd`
+	K2HTPSCRIPTDIR=`cd -P ${SRCTOP}/tests; pwd`
 fi
 K2HTPBINDIR=`cd -P ${SRCTOP}/src; pwd`
 K2HTPLIBDIR=`cd -P ${SRCTOP}/lib; pwd`
@@ -45,6 +92,7 @@ elif [ -f ${K2HTPBINDIR}/k2htpdtorsvr ]; then
 else
 	echo "ERROR: there is no k2htpdtorsvr binary"
 	echo "RESULT --> FAILED"
+	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 if [ -f ${K2HTPSCRIPTDIR}/${OBJDIR}/k2htpdtorclient ]; then
@@ -54,6 +102,7 @@ elif [ -f ${K2HTPSCRIPTDIR}/k2htpdtorclient ]; then
 else
 	echo "ERROR: there is no k2htpdtorclient binary"
 	echo "RESULT --> FAILED"
+	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 if [ -f ${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so.1 ]; then
@@ -65,6 +114,7 @@ elif [ -f ${K2HTPLIBDIR}/libk2htpdtor.so.1 ]; then
 else
 	echo "ERROR: there is no libk2htpdtor.so.1 binary"
 	echo "RESULT --> FAILED"
+	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 
@@ -255,6 +305,7 @@ if [ "X${DO_INI_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -262,6 +313,7 @@ if [ "X${DO_INI_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -269,6 +321,7 @@ if [ "X${DO_INI_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -278,7 +331,8 @@ if [ "X${DO_INI_CONF}" = "Xyes" ]; then
 
 	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
 		echo "RESULT --> FAILED"
-		echo "(archive log line count is diffrent)"
+		echo "(archive log line count is different)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -402,6 +456,7 @@ if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -409,6 +464,7 @@ if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -416,6 +472,7 @@ if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -425,7 +482,8 @@ if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
 
 	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
 		echo "RESULT --> FAILED"
-		echo "(archive log line count is diffrent)"
+		echo "(archive log line count is different)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -549,6 +607,7 @@ if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -556,6 +615,7 @@ if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -563,6 +623,7 @@ if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -572,7 +633,8 @@ if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
 
 	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
 		echo "RESULT --> FAILED"
-		echo "(archive log line count is diffrent)"
+		echo "(archive log line count is different)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -695,6 +757,7 @@ if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -702,6 +765,7 @@ if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -709,6 +773,7 @@ if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -718,7 +783,8 @@ if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
 
 	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
 		echo "RESULT --> FAILED"
-		echo "(archive log line count is diffrent)"
+		echo "(archive log line count is different)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -841,6 +907,7 @@ if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -848,6 +915,7 @@ if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -855,6 +923,7 @@ if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
 	if [ $? -ne 0 ]; then
 		echo "RESULT --> FAILED"
 		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -864,7 +933,8 @@ if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
 
 	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
 		echo "RESULT --> FAILED"
-		echo "(archive log line count is diffrent)"
+		echo "(archive log line count is different)"
+		put_result_xml_func NG ${XMLRESULTSFILE}
 		exit 1
 	fi
 
@@ -891,6 +961,7 @@ rm -f /tmp/k2htpdtorsvr_np_*
 
 echo ""
 echo "====== Finish all =========================================="
+put_result_xml_func OK ${XMLRESULTSFILE}
 exit 0
 
 #
