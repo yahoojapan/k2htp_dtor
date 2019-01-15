@@ -140,31 +140,6 @@ tests/k2htpdtorserver
 tests/k2htpdtorclient
 
 #
-# buildutils
-#
-buildutils/custom/*_Makefile
-buildutils/custom/*.yicf
-
-#
-# yahoo build
-#
-x86_64-linux-gcc
-x86_64-linux-gcc/*
-x86_64-linux-gcc.gcov
-x86_64-linux-gcc.gcov/*
-*/x86_64-linux-gcc
-*/x86_64-linux-gcc/*
-*/x86_64-linux-gcc.gcov
-*/x86_64-linux-gcc.gcov/*
-*.gcov
-*.gcno
-*.gcov.html
-rhel.*.depend
-rhel.*.package
-coverage
-coverage/*
-
-#
 # VIM modelines
 #
 # vim:set ts=4 fenc=utf-8:
