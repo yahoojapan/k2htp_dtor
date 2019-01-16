@@ -55,7 +55,7 @@ typedef struct k2htpdtorsvr_info{
 //---------------------------------------------------------
 // Utilities
 //---------------------------------------------------------
-bool ParseK2htpdtorsvrConfigration(const char* config, PK2HTPDTORSVRINFO pInfo);
+bool ParseK2htpdtorsvrConfiguration(const char* config, PK2HTPDTORSVRINFO pInfo);
 
 #endif	// K2HTPDTORSVRPARSER_H
 

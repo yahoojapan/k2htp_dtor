@@ -785,7 +785,7 @@ static bool ParseK2htpdtorsvrYaml(const char* config, PK2HTPDTORSVRINFO pInfo, b
 	return result;
 }
 
-bool ParseK2htpdtorsvrConfigration(const char* config, PK2HTPDTORSVRINFO pInfo)
+bool ParseK2htpdtorsvrConfiguration(const char* config, PK2HTPDTORSVRINFO pInfo)
 {
 	// get configuration type without environment
 	string		normalize_config("");

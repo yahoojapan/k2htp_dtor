@@ -376,7 +376,7 @@ bool K2HtpDtorManager::ReadIniFileContents(const char* filepath, dtorstrlst_t& l
 	return true;
 }
 
-bool K2HtpDtorManager::LoadConfigration(const char* config, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
+bool K2HtpDtorManager::LoadConfiguration(const char* config, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
 {
 	// get configuration type without environment
 	CHMCONFTYPE	conftype = check_chmconf_type(config);
@@ -387,14 +387,14 @@ bool K2HtpDtorManager::LoadConfigration(const char* config, string& chmpxconf, b
 
 	bool	result;
 	if(CHMCONF_TYPE_INI_FILE == conftype){
-		result = K2HtpDtorManager::LoadConfigrationIni(config, chmpxconf, isbroadcast, excepts, outputfile, excepttypes);
+		result = K2HtpDtorManager::LoadConfigurationIni(config, chmpxconf, isbroadcast, excepts, outputfile, excepttypes);
 	}else{
-		result = K2HtpDtorManager::LoadConfigrationYaml(config, chmpxconf, isbroadcast, excepts, outputfile, excepttypes, (CHMCONF_TYPE_JSON_STRING == conftype));
+		result = K2HtpDtorManager::LoadConfigurationYaml(config, chmpxconf, isbroadcast, excepts, outputfile, excepttypes, (CHMCONF_TYPE_JSON_STRING == conftype));
 	}
 	return result;
 }
 
-bool K2HtpDtorManager::LoadConfigrationIni(const char* filepath, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
+bool K2HtpDtorManager::LoadConfigurationIni(const char* filepath, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
 {
 	// Load all file contents(with include file)
 	dtorstrlst_t	linelst;
@@ -491,7 +491,7 @@ bool K2HtpDtorManager::LoadConfigrationIni(const char* filepath, string& chmpxco
 	return true;
 }
 
-bool K2HtpDtorManager::LoadConfigrationYaml(const char* config, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes, bool is_json_string)
+bool K2HtpDtorManager::LoadConfigurationYaml(const char* config, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes, bool is_json_string)
 {
 	// initialize yaml parser
 	yaml_parser_t	yparser;
@@ -521,7 +521,7 @@ bool K2HtpDtorManager::LoadConfigrationYaml(const char* config, string& chmpxcon
 	chmpxconf		= config;			// default
 	isbroadcast		= false;			// default
 	outputfile		= "";				// default
-	bool	result	= K2HtpDtorManager::LoadConfigrationYamlTopLevel(yparser, chmpxconf, isbroadcast, excepts, outputfile, excepttypes);
+	bool	result	= K2HtpDtorManager::LoadConfigurationYamlTopLevel(yparser, chmpxconf, isbroadcast, excepts, outputfile, excepttypes);
 
 	yaml_parser_delete(&yparser);
 	if(fp){
@@ -530,7 +530,7 @@ bool K2HtpDtorManager::LoadConfigrationYaml(const char* config, string& chmpxcon
 	return result;
 }
 
-bool K2HtpDtorManager::LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
+bool K2HtpDtorManager::LoadConfigurationYamlTopLevel(yaml_parser_t& yparser, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
 {
 	CHMYamlDataStack	other_stack;
 	bool				is_set_dtor	= false;
@@ -730,7 +730,7 @@ bool K2HtpDtorManager::LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, stri
 							}
 						}else{
 							// Load K2HTPDTOR section
-							if(!K2HtpDtorManager::LoadConfigrationYamlContents(yparser, chmpxconf, isbroadcast, excepts, outputfile, excepttypes)){
+							if(!K2HtpDtorManager::LoadConfigurationYamlContents(yparser, chmpxconf, isbroadcast, excepts, outputfile, excepttypes)){
 								ERR_K2HPRN("Something error occured in loading %s section.", CFG_K2HTPDTOR_SEC_STR);
 								result = false;
 							}
@@ -759,7 +759,7 @@ bool K2HtpDtorManager::LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, stri
 	return result;
 }
 
-bool K2HtpDtorManager::LoadConfigrationYamlContents(yaml_parser_t& yparser, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
+bool K2HtpDtorManager::LoadConfigurationYamlContents(yaml_parser_t& yparser, string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, string& outputfile, excepttypemap_t& excepttypes)
 {
 	// Must start yaml mapping event.
 	yaml_event_t	yevent;
@@ -934,7 +934,7 @@ bool K2HtpDtorManager::Add(k2h_h k2hhandle, const char* pchmpxconf)
 	bool			isbroadcast = false;
 	dtorpbylst_t	excepts;
 	excepttypemap_t	excepttypes;
-	if(!K2HtpDtorManager::LoadConfigration(pchmpxconf, chmpxconf, isbroadcast, excepts, outputfile, excepttypes)){
+	if(!K2HtpDtorManager::LoadConfiguration(pchmpxconf, chmpxconf, isbroadcast, excepts, outputfile, excepttypes)){
 		ERR_K2HPRN("Configuration file(%s) has something wrong.", pchmpxconf);
 		return false;
 	}

@@ -223,7 +223,7 @@ int main(int argc, char** argv)
 
 	// make and check info from conf file
 	K2HTPDTORSVRINFO	info;
-	if(!ParseK2htpdtorsvrConfigration(config.c_str(), &info)){
+	if(!ParseK2htpdtorsvrConfiguration(config.c_str(), &info)){
 		ERR_K2HPRN("Something wrong in conf file(%s).", config.c_str());
 		exit(EXIT_FAILURE);
 	}
