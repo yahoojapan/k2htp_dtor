@@ -150,11 +150,11 @@ class K2HtpDtorManager
 	protected:
 		static void* WorkerThread(void* param);
 		static bool ReadIniFileContents(const char* filepath, dtorstrlst_t& linelst, dtorstrlst_t& allfiles);
-		static bool LoadConfigration(const char* filepath, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
-		static bool LoadConfigrationIni(const char* filepath, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
-		static bool LoadConfigrationYaml(const char* config, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes, bool is_json_string);
-		static bool LoadConfigrationYamlTopLevel(yaml_parser_t& yparser, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
-		static bool LoadConfigrationYamlContents(yaml_parser_t& yparser, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
+		static bool LoadConfiguration(const char* filepath, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
+		static bool LoadConfigurationIni(const char* filepath, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
+		static bool LoadConfigurationYaml(const char* config, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes, bool is_json_string);
+		static bool LoadConfigurationYamlTopLevel(yaml_parser_t& yparser, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
+		static bool LoadConfigurationYamlContents(yaml_parser_t& yparser, std::string& chmpxconf, bool& isbroadcast, dtorpbylst_t& excepts, std::string& outputfile, excepttypemap_t& excepttypes);
 
 		K2HtpDtorManager();
 		virtual ~K2HtpDtorManager();
