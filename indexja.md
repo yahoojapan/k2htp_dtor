@@ -13,7 +13,9 @@ arrow_link_build: <a href="buildja.html" class="link-title"><span class="arrow-b
 
 # **K2HTPDTOR**
 **K2HTPDTOR** ([**K2H**ash](https://k2hash.antpick.ax/indexja.html) **T**ransaction **P**lugin **D**istributed **T**ransaction **O**f **R**epeater) は、[K2HASH](https://k2hash.antpick.ax/indexja.html) 操作のトランザクションを [CHMPX](https://chmpx.antpick.ax/indexja.html) を利用して他ホストへ転送を行い、[K2HASH](https://k2hash.antpick.ax/indexja.html) データの複製を容易に実現することを主目的としたプログラムです。
-**K2HTPDTOR** は、Yahoo! JAPANがオープンソースとして公開するプロダクト [AntPickax](https://antpick.ax/indexja.html) のひとつです。
+**K2HTPDTOR** は、Yahoo! JAPANがオープンソースとして公開するプロダクト [AntPickax](https://antpick.ax/indexja.html) のひとつです。  
+
+![K2HTPDTOR](images/top_k2htpdtor.png)
 
 ## {{ page.arrow_link_overview }}
 **K2HTPDTOR** の[概要](homeja.html)について説明します。  
