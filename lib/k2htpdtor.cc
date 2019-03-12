@@ -125,8 +125,7 @@ bool k2h_trans(k2h_h handle, PBCOM pBinCom)
 	int	outputfd;
 	if(DTOR_INVALID_HANDLE != (outputfd = pDtorMan->GetOutputFd(handle, true))){
 		// seek
-		off_t	fendpos;
-		if(-1 == (fendpos = lseek(outputfd, 0, SEEK_END))){
+		if(-1 == lseek(outputfd, 0, SEEK_END)){
 			ERR_K2HPRN("Could not seek file to end by errno(%d), but continue...", errno);
 		}else{
 			// write
