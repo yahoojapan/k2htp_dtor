@@ -13,7 +13,9 @@ arrow_link_build: <a href="build.html" class="link-title"><span class="arrow-bas
 
 # **K2HTPDTOR**
 **K2HTPDTOR** ([**K2H**ash](https://k2hash.antpick.ax/) **T**ransaction **P**lugin **D**istributed **T**ransaction **O**f **R**epeater) is a standard transaction plug-in compatible with the transaction plug-in provided in the [K2HASH](https://k2hash.antpick.ax/) library.
-**K2HTPDTOR** is one of [AntPickax](https://antpick.ax/)'s open source product by Yahoo! JAPAN.
+**K2HTPDTOR** is one of [AntPickax](https://antpick.ax/)'s open source product by Yahoo! JAPAN.  
+
+![K2HTPDTOR](images/top_k2htpdtor.png)
 
 ## {{ page.arrow_link_overview }}
 [Overview](home.html) about **K2HTPDTOR** library and components.
