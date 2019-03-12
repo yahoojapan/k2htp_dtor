@@ -70,7 +70,7 @@ k2htpdtorsvr [-conf <path> | -json <string>] [-d <debug level>] [-dlog <file pat
 ### K2HTPDTORSVR Options
 The options of the K2HTPDTORSVR program are summarized below.
 #### -h
-display help for the optsions of K2HTPDTORSVR program
+display help for the options of K2HTPDTORSVR program
 #### -ver
 display version of K2HTPDTORSVR program
 #### -conf
@@ -91,7 +91,7 @@ Specify the configuration by JSON string for CHMPX server node.
 _If you do not specify both -conf and -json option, K2HTPDTORSVR checks DTORSVRCONFFILE or DTORSVRJSONCONF environments._  
 _If there is not any option and environment for configuration, you can not run CHMPX program with error._
 
-### K2HTPDTORSVR Configurarion
+### K2HTPDTORSVR Configuration
 #### K2HTPDTORSVR Section(\[K2HTPDTORSVR\] is used for INI file)
 - OUTPUTFILE  
 When outputting the archive file of K2HASH, specify the file path. If not specified, the K2HASH archive file is not output.
@@ -120,7 +120,7 @@ Specify the setting value of K2HASH. As default 8. (See [K2HASH](https://k2hash.
 Specify the setting value of K2HASH. As default 128. (See [K2HASH](https://k2hash.antpick.ax/) )
 - K2HDTORSVR_TRANS  
 K2HTPDTORSVR can output transaction data to the K2HASH file and retransmit the transaction data to another server.  
-In this item, you specify the configuration of the K2HTPDTOR program to be used for retransfer.  
+In this item, you specify the configuration of the K2HTPDTOR program to be used for retransferred.  
 If this item is omitted, it means that this program is the end of transaction transfer.
 - DTORTHREADCNT  
 When retransmitting transaction data to another server, specify the number of threads of the K2HTPDTOR program. It is 1 if omitted. (Please refer to the explanation of [K2HASH](https://k2hash.antpick.ax/) )
