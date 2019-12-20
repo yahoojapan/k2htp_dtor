@@ -138,6 +138,9 @@ src/k2htpdtorsvr
 tests/results.xml
 tests/k2htpdtorserver
 tests/k2htpdtorclient
+tests/dtor_test.sh.log
+tests/dtor_test.sh.trs
+tests/test-suite.log
 
 #
 # VIM modelines
