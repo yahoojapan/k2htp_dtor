@@ -1,3 +1,9 @@
+k2htpdtor (1.0.30) trusty; urgency=low
+
+  * Updated version of dependency packages - #24
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 20 Dec 2019 12:21:38 +0900
+
 k2htpdtor (1.0.29) trusty; urgency=low
 
   * Fixed codes for cppcheck 1.87 - #21
