@@ -193,7 +193,6 @@ static unsigned char* cvt_escape_sequence(const char* pstr, size_t& length, bool
 	}
 	if(is_lastnil && pstr && '\0' == *pstr){
 		byarray.push_back(0x00);
-		pstr++;
 	}
 	if(0 == byarray.size()){
 		return NULL;
