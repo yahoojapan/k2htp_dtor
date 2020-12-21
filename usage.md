@@ -82,7 +82,7 @@ The **K2HTPDTOR** publishes [packages](https://packagecloud.io/app/antpickax/sta
 The package of the **K2HTPDTOR** is released in the form of Debian package, RPM package.  
 Since the installation method differs depending on your OS, please check the following procedure and install it.  
 
-##### Debian(Stretch) / Ubuntu(Bionic Beaver)
+##### For recent Debian-based Linux distributions users, follow the steps below:
 ```
 $ sudo apt-get update -y
 $ sudo apt-get install curl -y
@@ -90,7 +90,15 @@ $ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.d
 $ sudo apt-get install k2htpdtor chmpx
 ```
 
-##### Fedora28 / CentOS7.x(6.x)
+##### For users who use supported Fedora other than latest version, follow the steps below:
+```
+$ sudo dnf makecache
+$ sudo dnf install curl -y
+$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh | sudo bash
+$ sudo dnf install k2htpdtor chmpx
+```
+
+##### For other recent RPM-based Linux distributions users, follow the steps below:
 ```
 $ sudo yum makecache
 $ sudo yum install curl -y
