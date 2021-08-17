@@ -1,3 +1,10 @@
+k2htpdtor (1.0.33) trusty; urgency=low
+
+  * Added docker build and push in Github Actions - #33
+  * Functional improvements and bug fixes - #32
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 17 Aug 2021 20:38:03 +0900
+
 k2htpdtor (1.0.32) trusty; urgency=low
 
   * Fixed centos8 build and removed centos6 build - #29
