@@ -42,7 +42,9 @@ using namespace std;
 #define	PARENT_WRITE_FD_PIPE_POS		(CHILD_READ_FD_PIPE_POS + 1)
 #define	PIPE_FD_COUNT					(PARENT_WRITE_FD_PIPE_POS + 1)
 
-#define	K2HFUSE_NPIPE_FILE_PREFIX		"/tmp/k2htpdtorsvr_np_"
+#define	K2HFUSE_NPIPE_BASE_DIR			"/var/lib/antpickax"
+#define	K2HFUSE_NPIPE_TMP_DIR			"/tmp"
+#define	K2HFUSE_NPIPE_FILENAME_PREFIX	"k2htpdtorsvr_np_"
 
 #define	MAX_WAIT_COUNT_UNTIL_KILL		500			// 500 * 1ms = 500ms
 
@@ -329,14 +331,11 @@ bool K2htpSvrPlugin::ParseExecParam(const char* base)
 	// parse string list to filename/argvs/envs
 	strlst_t	argvs;
 	strlst_t	envs;
-	bool		is_env = true;
 	for(strlst_t::const_iterator iter = baselist.begin(); iter != baselist.end(); ++iter){
-		if(is_env && string::npos != (*iter).find('=')){
+		if(string::npos != (*iter).find('=')){
 			// env parameter
 			envs.push_back(*iter);
 		}else{
-			is_env = false;
-
 			// filename
 			FileName = (*iter);
 
@@ -401,8 +400,29 @@ bool K2htpSvrPlugin::StopWatchThread(void)
 
 bool K2htpSvrPlugin::BuildNamedPipeFile(bool keep_exist)
 {
+	static bool		stc_init_basedir = false;
+	static string	stc_basedir;
+
+	if(!stc_init_basedir){
+		struct stat	st;
+		if(0 != stat(K2HFUSE_NPIPE_BASE_DIR, &st)){
+			WAN_K2HPRN("%s directory is not existed, then use %s", K2HFUSE_NPIPE_BASE_DIR, K2HFUSE_NPIPE_TMP_DIR);
+			stc_basedir = K2HFUSE_NPIPE_TMP_DIR;
+		}else{
+			if(0 == (st.st_mode & S_IFDIR)){
+				WAN_K2HPRN("%s is not directory, then use %s", K2HFUSE_NPIPE_BASE_DIR, K2HFUSE_NPIPE_TMP_DIR);
+				stc_basedir = K2HFUSE_NPIPE_TMP_DIR;
+			}else{
+				stc_basedir = K2HFUSE_NPIPE_BASE_DIR;
+			}
+		}
+		stc_init_basedir = true;
+	}
+
 	if(PipeFilePath.empty()){
-		PipeFilePath = K2HFUSE_NPIPE_FILE_PREFIX;
+		PipeFilePath  = stc_basedir;
+		PipeFilePath += "/";
+		PipeFilePath += K2HFUSE_NPIPE_FILENAME_PREFIX;
 		PipeFilePath += to_string(getpid());
 	}
 

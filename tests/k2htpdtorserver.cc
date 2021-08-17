@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <libgen.h>
+
 #include <k2hash/k2htransfunc.h>
 #include <chmpx/chmpx.h>
 #include <chmpx/chmcntrl.h>
