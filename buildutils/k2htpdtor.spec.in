@@ -64,6 +64,7 @@ BuildRequires: git-core gcc-c++ make libtool libfullock-devel >= 1.0.36, k2hash-
 %make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.so' -exec rm -f {} ';'
+mkdir -p %{buildroot}/var/lib/antpickax
 
 %if %{make_check}
 %check
@@ -94,6 +95,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*
+%dir %attr(0777,root,root) /var/lib/antpickax
 
 %changelog
 @RPMCHANGELOG@
