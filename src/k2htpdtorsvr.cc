@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <libgen.h>
 
 #include <k2hash/k2hash.h>
 #include <k2hash/k2hutil.h>
