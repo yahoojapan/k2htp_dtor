@@ -1,3 +1,9 @@
+k2htpdtor (1.0.34) trusty; urgency=low
+
+  * Fixed Dockerfile template for calling ldconfig - #35
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 27 Aug 2021 17:30:05 +0900
+
 k2htpdtor (1.0.33) trusty; urgency=low
 
   * Added docker build and push in Github Actions - #33
