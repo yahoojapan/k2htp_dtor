@@ -71,7 +71,7 @@ bool make_exist_directory(const char* path, string& abspath)
 	}
 
 	// make upper directory(reentrant)
-	tmppath	= tmppath.substr(0, pos);
+	tmppath.resize(pos);
 	if(!make_exist_directory(tmppath.c_str(), abspath)){
 		return false;
 	}
@@ -147,7 +147,7 @@ static bool make_exist_file_ex(const char* path, string& abspath, int& fd, dev_t
 		ERR_K2HPRN("there is no more upper directory for path(%s).", path);
 		return false;
 	}
-	tmppath	= tmppath.substr(0, pos);
+	tmppath.resize(pos);
 	if(!make_exist_directory(tmppath.c_str(), abspath)){
 		return false;
 	}

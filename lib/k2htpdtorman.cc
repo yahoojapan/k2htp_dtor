@@ -1144,7 +1144,7 @@ bool K2HtpDtorManager::CheckWatch(int inotifyfd)
 		// loop by each inotify_event
 		const struct inotify_event*	in_event;
 		for(unsigned char* ptr = buff; !is_file_changed && ptr < (buff + length); ptr += sizeof(struct inotify_event) + in_event->len){
-			in_event = (const struct inotify_event*)ptr;
+			in_event = const_cast<const struct inotify_event*>(reinterpret_cast<struct inotify_event*>(ptr));
 
 			if(in_event->mask & IN_DELETE || in_event->mask & IN_DELETE_SELF || in_event->mask & IN_MOVE_SELF || in_event->mask & IN_MOVED_FROM || in_event->mask & IN_MOVED_TO){
 				// remove or move the file
