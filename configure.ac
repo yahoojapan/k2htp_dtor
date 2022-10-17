@@ -181,6 +181,7 @@ AC_CONFIG_FILES([Makefile
 				buildutils/Makefile
 				buildutils/control
 				buildutils/copyright
+				buildutils/rules
 				buildutils/k2htpdtor.spec
 				buildutils/Dockerfile.templ])
 

@@ -1,48 +1,48 @@
-k2htpdtor (1.0.35) trusty; urgency=low
+k2htpdtor (1.0.35) unstable; urgency=low
 
   * Bumpup for updating the base Docker image becase of CHMPX updated
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 27 Sep 2021 11:14:33 +0900
 
-k2htpdtor (1.0.34) trusty; urgency=low
+k2htpdtor (1.0.34) unstable; urgency=low
 
   * Fixed Dockerfile template for calling ldconfig - #35
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 27 Aug 2021 17:30:05 +0900
 
-k2htpdtor (1.0.33) trusty; urgency=low
+k2htpdtor (1.0.33) unstable; urgency=low
 
   * Added docker build and push in Github Actions - #33
   * Functional improvements and bug fixes - #32
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 17 Aug 2021 20:38:03 +0900
 
-k2htpdtor (1.0.32) trusty; urgency=low
+k2htpdtor (1.0.32) unstable; urgency=low
 
   * Fixed centos8 build and removed centos6 build - #29
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 17 Dec 2020 12:58:43 +0900
 
-k2htpdtor (1.0.31) trusty; urgency=low
+k2htpdtor (1.0.31) unstable; urgency=low
 
   * Switched Travis CI to Github actions and extended supported OS - #27
   * Fixed bugs detected by cppcheck - #26
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 17 Nov 2020 15:23:16 +0900
 
-k2htpdtor (1.0.30) trusty; urgency=low
+k2htpdtor (1.0.30) unstable; urgency=low
 
   * Updated version of dependency packages - #24
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 20 Dec 2019 12:21:38 +0900
 
-k2htpdtor (1.0.29) trusty; urgency=low
+k2htpdtor (1.0.29) unstable; urgency=low
 
   * Fixed codes for cppcheck 1.87 - #21
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 12 Mar 2019 18:48:50 +0900
 
-k2htpdtor (1.0.28) trusty; urgency=low
+k2htpdtor (1.0.28) unstable; urgency=low
 
   * Fixed misspelling, and etc - #18
   * Reflected the spelling check result for all sources(2) - #17
@@ -51,32 +51,32 @@ k2htpdtor (1.0.28) trusty; urgency=low
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 17 Jan 2019 11:04:06 +0900
 
-k2htpdtor (1.0.27) trusty; urgency=low
+k2htpdtor (1.0.27) unstable; urgency=low
 
   * Updated common build tool files
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 11 Dec 2018 14:03:07 +0900
 
-k2htpdtor (1.0.26) trusty; urgency=low
+k2htpdtor (1.0.26) unstable; urgency=low
 
   * Changed to strict packaging and changed documents
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 06 Dec 2018 15:36:40 +0900
 
-k2htpdtor (1.0.25) trusty; urgency=low
+k2htpdtor (1.0.25) unstable; urgency=low
 
   * Fixed destructing code for corresponding to SIOF, etc
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Wed, 17 Oct 2018 19:12:19 +0900
 
-k2htpdtor (1.0.24) trusty; urgency=low
+k2htpdtor (1.0.24) unstable; urgency=low
 
   * Revert subdir-objects automake option in src directory
   * avoid static object initialization order problem(SIOF)
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 02 Jul 2018 11:11:30 +0900
 
-k2htpdtor (1.0.23) trusty; urgency=low
+k2htpdtor (1.0.23) unstable; urgency=low
 
   * Cleanup credit comments in sources and Modified etc
   * Changed build logic to new for rpm/debian packaging
@@ -84,27 +84,27 @@ k2htpdtor (1.0.23) trusty; urgency=low
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 17 May 2018 14:21:10 +0900
 
-k2htpdtor (1.0.22) trusty; urgency=low
+k2htpdtor (1.0.22) unstable; urgency=low
 
   * Updated submodule dependency for chmpx/k2hash
 
  -- Hirotaka Wakabayashi <hiwakaba@yahoo-corp.jp>  Mon, 26 Mar 2018 15:44:29 +0900
 
-k2htpdtor (1.0.21) trusty; urgency=low
+k2htpdtor (1.0.21) unstable; urgency=low
 
   * Added lib_version_for_link option to make_valiables.sh
   * Updated submodule dependency for chmpx/k2hash/fullock
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 28 Mar 2017 13:20:11 +0900
 
-k2htpdtor (1.0.20) trusty; urgency=low
+k2htpdtor (1.0.20) unstable; urgency=low
 
   * Updated dependency for fixing bugs in libfullock
   * Updated submodules and changed .travis.yaml - #1
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 14 Feb 2017 16:54:17 +0900
 
-k2htpdtor (1.0.19) trusty; urgency=low
+k2htpdtor (1.0.19) unstable; urgency=low
 
   * First version of open source on Github
 
