@@ -32,10 +32,13 @@ AM_CPPFLAGS = $(k2hash_CFLAGS) $(fullock_CFLAGS) $(chmpx_CFLAGS)
 .PHONY: k2htpdtorversion
 
 k2htpdtorversion.cc: k2htpdtorversion
-	@../buildutils/make_commit_hash_source.sh k2htpdtorversion.cc k2htpdtor_commit_hash
+	@../buildutils/make_commit_hash_source.sh -dch @CURRENTREV@ k2htpdtorversion.cc k2htpdtor_commit_hash
 
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: noexpandtab sw=4 ts=4 fdm=marker
+# vim<600: noexpandtab sw=4 ts=4
 #

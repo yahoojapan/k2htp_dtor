@@ -26,9 +26,9 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = $(k2hash_CFLAGS) $(fullock_CFLAGS) $(chmpx_CFLAGS)
 AM_CPPFLAGS = $(k2hash_CFLAGS) $(fullock_CFLAGS) $(chmpx_CFLAGS)
 
-TESTS = dtor_test.sh
+TESTS = test.sh
 
-EXTRA_DIST =	dtor_test.sh \
+EXTRA_DIST =	test.sh \
 				dtor_svr_test.sh \
 				k2htpdtorsvr_plugin.sh \
 				dtor_test_archive.data \
