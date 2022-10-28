@@ -33,21 +33,11 @@ exit 0
 ##############
 # Base directory
 ##############
-RUNDIR=`pwd`
-K2HTPSCRIPTDIR=`dirname $0`
-if [ "X$K2HTPSCRIPTDIR" = "X" -o "X$K2HTPSCRIPTDIR" = "X." ]; then
-	TMP_BASENAME=`basename $0`
-	TMP_FIRSTWORD=`echo $0 | awk -F"/" '{print $1}'`
-
-	if [ "X$TMP_BASENAME" = "X$TMP_FIRSTWORD" ]; then
-		# search path
-		K2HTPSCRIPTDIR=`which $0`
-		K2HTPSCRIPTDIR=`dirname $K2HTPSCRIPTDIR`
-	else
-		K2HTPSCRIPTDIR=.
-	fi
-fi
-BASEDIR=`cd -P ${RUNDIR}/${K2HTPSCRIPTDIR}; pwd`
+#SCRIPTNAME=$(basename "${0}")
+SCRIPTDIR=$(dirname "${0}")
+SCRIPTDIR=$(cd "${SCRIPTDIR}" || exit 1; pwd)
+SRCTOP=$(cd "${SCRIPTDIR}/.." || exit 1; pwd)
+BASEDIR=$(cd "${SRCTOP}/tests" || exit 1; pwd)
 
 ##############
 # Run
@@ -131,7 +121,10 @@ rm -f /tmp/k2htpdtorsvr_test.log
 exit 0
 
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: noexpandtab sw=4 ts=4 fdm=marker
+# vim<600: noexpandtab sw=4 ts=4
 #
