@@ -131,7 +131,6 @@ static bool ParamParser(int argc, char** argv, dtorparam_t& params)
 				fprintf(stderr, "[ERROR] Option %s needs parameter.\n", argv[cnt]);
 				return false;
 			}
-			// cppcheck-suppress unmatchedSuppression
 			// cppcheck-suppress knownConditionTrueFalse
 			if(is_conf_opt){
 				fprintf(stderr, "[ERROR] Already set -conf option, option %s could not be specified with -conf.\n", argv[cnt]);
@@ -174,7 +173,6 @@ int main(int argc, char** argv)
 	dtorparam_t	params;
 
 	// Parse parameter
-	// cppcheck-suppress unmatchedSuppression
 	// cppcheck-suppress stlSize
 	if(!ParamParser(argc, argv, params) || 0 == params.size()){
 		PrintUsage(argv[0]);
