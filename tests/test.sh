@@ -15,886 +15,910 @@
 # REVISION:
 #
 
-##############################################################
-## library path & programs path
-##############################################################
-K2HTPSCRIPTDIR=`dirname $0`
-if [ "X${SRCTOP}" = "X" ]; then
-	SRCTOP=`cd ${K2HTPSCRIPTDIR}/..; pwd`
-else
-	K2HTPSCRIPTDIR=`cd -P ${SRCTOP}/tests; pwd`
-fi
-K2HTPBINDIR=`cd -P ${SRCTOP}/src; pwd`
-K2HTPLIBDIR=`cd -P ${SRCTOP}/lib; pwd`
-cd ${K2HTPSCRIPTDIR}
+#--------------------------------------------------------------
+# Common Variables
+#--------------------------------------------------------------
+PRGNAME=$(basename "${0}")
+SCRIPTDIR=$(dirname "${0}")
+SCRIPTDIR=$(cd "${SCRIPTDIR}" || exit 1; pwd)
+SRCTOP=$(cd "${SCRIPTDIR}/.." || exit 1; pwd)
 
-if [ "X${OBJDIR}" = "X" ]; then
-	LD_LIBRARY_PATH="${K2HTPLIBDIR}/.libs"
-else
-	LD_LIBRARY_PATH="${K2HTPLIBDIR}/${OBJDIR}"
-fi
+#
+# Directories / Files
+#
+SRCDIR="${SRCTOP}/src"
+LIBDIR="${SRCTOP}/lib"
+LIBOBJDIR="${LIBDIR}/.libs"
+TESTDIR="${SRCTOP}/tests"
+
+DTORSVRBIN="${SRCDIR}/k2htpdtorsvr"
+DTORCLTBIN="${TESTDIR}/k2htpdtorclient"
+DTORLIBSO="${LIBOBJDIR}/libk2htpdtor.so.1"
+
+K2HTPDTOR_SVR_PLUGIN_TOOL="${TESTDIR}/k2htpdtorsvr_plugin.sh"
+CLONE_K2HTPDTOR_SVR_PLUGIN_TOOL="/tmp/k2htpdtorsvr_plugin.sh"
+
+CFG_SVR_FILE_PREFIX="${TESTDIR}/dtor_test_server"
+CFG_SLV_FILE_PREFIX="${TESTDIR}/dtor_test_slave"
+CFG_TRANS_SVR_FILE_PREFIX="${TESTDIR}/dtor_test_trans_server"
+CFG_TRANS_SLV_FILE_PREFIX="${TESTDIR}/dtor_test_trans_slave"
+CFG_JSON_STRING_DATA_FILE="${TESTDIR}/test_json_string.data"
+
+K2H_TEST_FILE="/tmp/k2hftdtorsvr.k2h"
+K2H_TRANS_TEST_FILE="/tmp/k2hftdtorsvr_trans.k2h"
+
+DTOR_TEST_ARCHIVE_DATA_FILE="${TESTDIR}/dtor_test_archive.data"
+
+TEST_CHMPX_SVR_LOG="/tmp/chmpx_server.log"
+TEST_CHMPX_SLV_LOG="/tmp/chmpx_slave.log"
+TEST_CHMPX_TRANS_SVR_LOG="/tmp/chmpx_trans_server.log"
+TEST_CHMPX_TRANS_SLV_LOG="/tmp/chmpx_trans_slave.log"
+TEST_K2HTPDTORSVR_TRANS_SVR_LOG="/tmp/k2htpdtorsvr_trans_server.log"
+TEST_K2HTPDTORSVR_SVR_LOG="/tmp/k2htpdtorsvr_server.log"
+
+DTOR_TEST_SLV_ARCHIVE_LOG_FILE="/tmp/dtor_test_slave_archive.log"
+DTOR_TRANS_TEST_SLV_ARCHIVE_LOG_FILE="/tmp/dtor_test_trans_slave_archive.log"
+DTOR_TEST_SVR_ARCHIVE_LOG_FILE="/tmp/k2hftdtorsvr_archive.log"
+DTOR_TRANS_TEST_SVR_ARCHIVE_LOG_FILE="/tmp/k2hftdtorsvr_trans_archive.log"
+DTOR_PLUGIN_TEST_LOG_FILE="/tmp/k2hftdtorsvr_plugin.log"
+DTOR_PLUGIN_TRANS_TEST_LOG_FILE="/tmp/k2hftdtorsvr_trans_plugin.log"
+
+DTOR_NP_DIR="/tmp"
+DTOR_NP_FILE_PREFIX="k2htpdtorsvr_np_"
+
+#
+# Others
+#
+WAIT_SEC_AFTER_RUN_CHMPX_SVR=15
+WAIT_SEC_AFTER_RUN_CHMPX_SLV=15
+WAIT_SEC_AFTER_RUN_K2HTPDTORSVR=15
+WAIT_SEC_AFTER_RUN_K2HTPDTORCLIENT=15
+WAIT_SEC_AFTER_SEND_HUP=10
+WAIT_SEC_AFTER_SEND_KILL=5
+
+#
+# LD_LIBRARY_PATH
+#
+LD_LIBRARY_PATH="${LIBOBJDIR}"
 export LD_LIBRARY_PATH
 
+#--------------------------------------------------------------
+# Usage
+#--------------------------------------------------------------
+func_usage()
+{
+	echo ""
+	echo "Usage: $1 { --help(-h) } { ini_conf } { yaml_conf } { json_conf } { json_string } { json_env } { silent | err | wan | msg }"
+	echo ""
+}
+
+#--------------------------------------------------------------
+# Variables and Utility functions
+#--------------------------------------------------------------
 #
-# Binary path
+# Escape sequence
 #
-if [ -f ${K2HTPBINDIR}/${OBJDIR}/k2htpdtorsvr ]; then
-	DTORSVRBIN=${K2HTPBINDIR}/${OBJDIR}/k2htpdtorsvr
-elif [ -f ${K2HTPBINDIR}/k2htpdtorsvr ]; then
-	DTORSVRBIN=${K2HTPBINDIR}/k2htpdtorsvr
+if [ -t 1 ]; then
+	CBLD=$(printf '\033[1m')
+	CREV=$(printf '\033[7m')
+	CRED=$(printf '\033[31m')
+	CYEL=$(printf '\033[33m')
+	CGRN=$(printf '\033[32m')
+	CDEF=$(printf '\033[0m')
 else
-	echo "ERROR: there is no k2htpdtorsvr binary"
-	echo "RESULT --> FAILED"
-	exit 1
-fi
-if [ -f ${K2HTPSCRIPTDIR}/${OBJDIR}/k2htpdtorclient ]; then
-	DTORCLTBIN=${K2HTPSCRIPTDIR}/${OBJDIR}/k2htpdtorclient
-elif [ -f ${K2HTPSCRIPTDIR}/k2htpdtorclient ]; then
-	DTORCLTBIN=${K2HTPSCRIPTDIR}/k2htpdtorclient
-else
-	echo "ERROR: there is no k2htpdtorclient binary"
-	echo "RESULT --> FAILED"
-	exit 1
-fi
-if [ -f ${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so.1 ]; then
-	DTORLIBSO=${K2HTPLIBDIR}/${OBJDIR}/libk2htpdtor.so.1
-elif [ -f ${K2HTPLIBDIR}/.libs/libk2htpdtor.so.1 ]; then
-	DTORLIBSO=${K2HTPLIBDIR}/.libs/libk2htpdtor.so.1
-elif [ -f ${K2HTPLIBDIR}/libk2htpdtor.so.1 ]; then
-	DTORLIBSO=${K2HTPLIBDIR}/libk2htpdtor.so.1
-else
-	echo "ERROR: there is no libk2htpdtor.so.1 binary"
-	echo "RESULT --> FAILED"
-	exit 1
+	CBLD=""
+	CREV=""
+	CRED=""
+	CYEL=""
+	CGRN=""
+	CDEF=""
 fi
 
-##############################################################
-## Parameters
-##############################################################
-#
-# Check only INI type configuration as default.
-#
-DO_INI_CONF=yes
-DO_YAML_CONF=no
-DO_JSON_CONF=no
-DO_JSON_STRING=no
-DO_JSON_ENV=no
-DEBUGMODE=silent
+#--------------------------------------------------------------
+# Message functions
+#--------------------------------------------------------------
+PRNTITLE()
+{
+	echo ""
+	echo "${CGRN}---------------------------------------------------------------------${CDEF}"
+	echo "${CGRN}${CREV}[TITLE]${CDEF} ${CGRN}$*${CDEF}"
+	echo "${CGRN}---------------------------------------------------------------------${CDEF}"
+}
 
-if [ $# -ne 0 ]; then
-	DO_INI_CONF=no
-	DO_YAML_CONF=no
-	DO_JSON_CONF=no
-	DO_JSON_STRING=no
-	DO_JSON_ENV=no
+PRNERR()
+{
+	echo "${CBLD}${CRED}[ERROR]${CDEF} ${CRED}$*${CDEF}"
+}
 
-	while [ $# -ne 0 ]; do
-		if [ "X$1" = "Xhelp" -o "X$1" = "Xh" -o "X$1" = "X-help" -o "X$1" = "X-h" ]; then
-			PROGRAM_NAME=`basename $0`
-			echo "Usage: ${PROGRAM_NAME} { -help } { ini_conf } { yaml_conf } { json_conf } { json_string } { json_env } { silent | err | wan | msg }"
-			echo "       no option means all process doing."
-			echo ""
-			exit 0
-		elif [ "X$1" = "Xini_conf" ]; then
-			DO_INI_CONF=yes
-		elif [ "X$1" = "Xyaml_conf" ]; then
-			DO_YAML_CONF=yes
-		elif [ "X$1" = "Xjson_conf" ]; then
-			DO_JSON_CONF=yes
-		elif [ "X$1" = "Xjson_string" ]; then
-			DO_JSON_STRING=yes
-		elif [ "X$1" = "Xjson_env" ]; then
-			DO_JSON_ENV=yes
-		elif [ "X$1" = "Xsilent" ]; then
-			DEBUGMODE=$1
-		elif [ "X$1" = "Xerr" ]; then
-			DEBUGMODE=$1
-		elif [ "X$1" = "Xwan" ]; then
-			DEBUGMODE=$1
-		elif [ "X$1" = "Xmsg" ]; then
-			DEBUGMODE=$1
-		else
-			echo "[ERROR] unknown option $1 specified."
-			echo ""
+PRNWARN()
+{
+	echo "${CYEL}${CREV}[WARNING]${CDEF} $*"
+}
+
+PRNMSG()
+{
+	echo "${CYEL}${CREV}[MSG]${CDEF} ${CYEL}$*${CDEF}"
+}
+
+PRNINFO()
+{
+	echo "${CREV}[INFO]${CDEF} $*"
+}
+
+PRNSUCCEED()
+{
+	echo "${CREV}[SUCCEED]${CDEF} $*"
+}
+
+#--------------------------------------------------------------
+# Utilitiy functions
+#--------------------------------------------------------------
+#
+# Run all processes
+#
+# $1:	type(ini, yaml, json, jsonstring, jsonenv)
+#
+run_all_processes()
+{
+	_JSON_ENV_MODE=0
+	if [ $# -ne 1 ] || [ -z "$1" ]; then
+		PRNERR "run_all_processes function parameter is wrong."
+		return 1
+
+	elif [ "$1" = "ini" ] || [ "$1" = "INI" ]; then
+		CONF_OPT_STRING="-conf"
+		CONF_FILE_EXT=".ini"
+		CONF_OPT_SVR_PARAM="${CFG_SVR_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_SLV_PARAM="${CFG_SLV_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_TRANS_SVR_PARAM="${CFG_TRANS_SVR_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_TRANS_SLV_PARAM="${CFG_TRANS_SLV_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_DTORCLT_PARAM="${CONF_OPT_SLV_PARAM}"
+
+	elif [ "$1" = "yaml" ] || [ "$1" = "YAML" ]; then
+		CONF_OPT_STRING="-conf"
+		CONF_FILE_EXT=".yaml"
+		CONF_OPT_SVR_PARAM="${CFG_SVR_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_SLV_PARAM="${CFG_SLV_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_TRANS_SVR_PARAM="${CFG_TRANS_SVR_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_TRANS_SLV_PARAM="${CFG_TRANS_SLV_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_DTORCLT_PARAM="${CONF_OPT_SLV_PARAM}"
+
+	elif [ "$1" = "json" ] || [ "$1" = "JSON" ]; then
+		CONF_OPT_STRING="-conf"
+		CONF_FILE_EXT=".json"
+		CONF_OPT_SVR_PARAM="${CFG_SVR_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_SLV_PARAM="${CFG_SLV_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_TRANS_SVR_PARAM="${CFG_TRANS_SVR_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_OPT_TRANS_SLV_PARAM="${CFG_TRANS_SLV_FILE_PREFIX}${CONF_FILE_EXT}"
+		CONF_DTORCLT_PARAM="${CONF_OPT_SLV_PARAM}"
+
+	elif [ "$1" = "jsonstring" ] || [ "$1" = "JSONSTRING" ] || [ "$1" = "sjson" ] || [ "$1" = "SJSON" ] || [ "$1" = "jsonstr" ] || [ "$1" = "JSONSTR" ]; then
+		CONF_OPT_STRING="-json"
+		CONF_OPT_SVR_PARAM="${DTOR_TEST_SERVER_JSON_STR}"
+		CONF_OPT_SLV_PARAM="${DTOR_TEST_SLAVE_JSON_STR}"
+		CONF_OPT_TRANS_SVR_PARAM="${DTOR_TEST_TRANS_SERVER_JSON_STR}"
+		CONF_OPT_TRANS_SLV_PARAM="${DTOR_TEST_TRANS_SLAVE_JSON_STR}"
+		CONF_DTORCLT_PARAM="${DTOR_TEST_SLAVE_JSON_STR}"
+
+	elif [ "$1" = "jsonenv" ] || [ "$1" = "JSONENV" ] || [ "$1" = "ejson" ] || [ "$1" = "EJSON" ]; then
+		_JSON_ENV_MODE=1
+		CONF_OPT_SVR_PARAM="${DTOR_TEST_SERVER_JSON_STR}"
+		CONF_OPT_SLV_PARAM="${DTOR_TEST_SLAVE_JSON_STR}"
+		CONF_OPT_TRANS_SVR_PARAM="${DTOR_TEST_TRANS_SERVER_JSON_STR}"
+		CONF_OPT_TRANS_SLV_PARAM="${DTOR_TEST_TRANS_SLAVE_JSON_STR}"
+		CONF_DTORCLT_PARAM="${DTOR_TEST_SLAVE_JSON_STR}"
+
+	else
+		PRNERR "run_all_processes function parameter is wrong."
+		return 1
+	fi
+
+	#------------------------------------------------------
+	# RUN Processes
+	#------------------------------------------------------
+	PRNMSG "RUN ALL PROCESSES"
+
+	#
+	# Run chmpx for trans server
+	#
+	if [ "${_JSON_ENV_MODE}" -ne 1 ]; then
+		"${CHMPXBIN}" "${CONF_OPT_STRING}" "${CONF_OPT_TRANS_SVR_PARAM}" -d "${DEBUGMODE}" > "${TEST_CHMPX_TRANS_SVR_LOG}" 2>&1 &
+	else
+		CHMJSONCONF="${CONF_OPT_TRANS_SVR_PARAM}" "${CHMPXBIN}" -d "${DEBUGMODE}" > "${TEST_CHMPX_TRANS_SVR_LOG}" 2>&1 &
+	fi
+	CHMPXSVRTRANSPID=$!
+	sleep "${WAIT_SEC_AFTER_RUN_CHMPX_SVR}"
+	PRNINFO "CHMPX TRANS(server)             : ${CHMPXSVRTRANSPID}"
+
+	#
+	# Run k2htpdtorsvr process on trans server
+	#
+	if [ "${_JSON_ENV_MODE}" -ne 1 ]; then
+		"${DTORSVRBIN}" "${CONF_OPT_STRING}" "${CONF_OPT_TRANS_SVR_PARAM}" -d "${DEBUGMODE}" > "${TEST_K2HTPDTORSVR_TRANS_SVR_LOG}" 2>&1 &
+	else
+		DTORSVRJSONCONF="${CONF_OPT_TRANS_SVR_PARAM}" "${DTORSVRBIN}" -d "${DEBUGMODE}" > "${TEST_K2HTPDTORSVR_TRANS_SVR_LOG}" 2>&1 &
+	fi
+	K2HTPDTORSVRTRANSPID=$!
+	sleep "${WAIT_SEC_AFTER_RUN_K2HTPDTORSVR}"
+	PRNINFO "K2HTPDTORSVR TRANS(server)      : ${K2HTPDTORSVRTRANSPID}"
+
+	#
+	# Run chmpx for trans slave
+	#
+	if [ "${_JSON_ENV_MODE}" -ne 1 ]; then
+		"${CHMPXBIN}" "${CONF_OPT_STRING}" "${CONF_OPT_TRANS_SLV_PARAM}" -d "${DEBUGMODE}" > "${TEST_CHMPX_TRANS_SLV_LOG}" 2>&1 &
+	else
+		CHMJSONCONF="${CONF_OPT_TRANS_SLV_PARAM}" "${CHMPXBIN}" -d "${DEBUGMODE}" > "${TEST_CHMPX_TRANS_SLV_LOG}" 2>&1 &
+	fi
+	CHMPXSLVTRANSPID=$!
+	sleep "${WAIT_SEC_AFTER_RUN_CHMPX_SLV}"
+	PRNINFO "CHMPX TRANS(slave)              : ${CHMPXSLVTRANSPID}"
+
+	#
+	# Run chmpx for server
+	#
+	if [ "${_JSON_ENV_MODE}" -ne 1 ]; then
+		"${CHMPXBIN}" "${CONF_OPT_STRING}" "${CONF_OPT_SVR_PARAM}" -d "${DEBUGMODE}" > "${TEST_CHMPX_SVR_LOG}" 2>&1 &
+	else
+		CHMJSONCONF="${CONF_OPT_SVR_PARAM}" "${CHMPXBIN}" -d "${DEBUGMODE}" > "${TEST_CHMPX_SVR_LOG}" 2>&1 &
+	fi
+	CHMPXSVRPID=$!
+	sleep "${WAIT_SEC_AFTER_RUN_CHMPX_SVR}"
+	PRNINFO "CHMPX(server)                   : ${CHMPXSVRPID}"
+
+	#
+	# Run k2htpdtorsvr process on server
+	#
+	if [ "${_JSON_ENV_MODE}" -ne 1 ]; then
+		"${DTORSVRBIN}" "${CONF_OPT_STRING}" "${CONF_OPT_SVR_PARAM}" -d "${DEBUGMODE}" > "${TEST_K2HTPDTORSVR_SVR_LOG}" 2>&1 &
+	else
+		DTORSVRJSONCONF="${CONF_OPT_SVR_PARAM}" "${DTORSVRBIN}" -d "${DEBUGMODE}" > "${TEST_K2HTPDTORSVR_SVR_LOG}" 2>&1 &
+	fi
+	K2HTPDTORSVRPID=$!
+	sleep "${WAIT_SEC_AFTER_RUN_K2HTPDTORSVR}"
+	PRNINFO "K2HTPDTORSVR(server)            : ${K2HTPDTORSVRPID}"
+
+	#
+	# Run chmpx for slave
+	#
+	if [ "${_JSON_ENV_MODE}" -ne 1 ]; then
+		"${CHMPXBIN}" "${CONF_OPT_STRING}" "${CONF_OPT_SLV_PARAM}" -d "${DEBUGMODE}" > "${TEST_CHMPX_SLV_LOG}" 2>&1 &
+	else
+		CHMJSONCONF="${CONF_OPT_SLV_PARAM}" "${CHMPXBIN}" -d "${DEBUGMODE}" > "${TEST_CHMPX_SLV_LOG}" 2>&1 &
+	fi
+	CHMPXSLVPID=$!
+	sleep "${WAIT_SEC_AFTER_RUN_CHMPX_SLV}"
+	PRNINFO "CHMPX(slave)                    : ${CHMPXSLVPID}"
+
+	#----------------------------------------------------------
+	# Run test client process
+	#----------------------------------------------------------
+	PRNMSG "RUN K2HTPDTORCLIENT"
+
+	if ! "${DTORCLTBIN}" -f "${DTOR_TEST_ARCHIVE_DATA_FILE}" -l "${DTORLIBSO}" -p "${CONF_DTORCLT_PARAM}" -c 1; then
+		PRNERR "FAILED : RUN K2HTPDTORCLIENT"
+	else
+		PRNINFO "SUCCEED : RUN K2HTPDTORCLIENT"
+	fi
+	sleep "${WAIT_SEC_AFTER_RUN_K2HTPDTORCLIENT}"
+
+	return 0
+}
+
+#
+# Check result
+#
+check_result()
+{
+	PRNMSG "CHECK RESULT"
+
+	_FOUND_ERROR=0
+
+	#
+	# Compare file
+	#
+	if ! cmp "${DTOR_TRANS_TEST_SLV_ARCHIVE_LOG_FILE}" "${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}" > /dev/null 2>&1; then
+		PRNERR "FAILED : Detected difference between \"${DTOR_TRANS_TEST_SLV_ARCHIVE_LOG_FILE}\" and \"${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}\""
+		_FOUND_ERROR=1
+	else
+		PRNINFO "SUCCEED : The same result(\"${DTOR_TRANS_TEST_SLV_ARCHIVE_LOG_FILE}\" and \"${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}\")"
+	fi
+
+	#
+	# Compare file
+	#
+	if ! cmp "${DTOR_TRANS_TEST_SVR_ARCHIVE_LOG_FILE}" "${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}" > /dev/null 2>&1; then
+		PRNERR "FAILED : Detected difference between \"${DTOR_TRANS_TEST_SVR_ARCHIVE_LOG_FILE}\" and \"${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}\""
+		_FOUND_ERROR=1
+	else
+		PRNINFO "SUCCEED : The same result(\"${DTOR_TRANS_TEST_SVR_ARCHIVE_LOG_FILE}\" and \"${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}\")"
+	fi
+
+	#
+	# Compare file
+	#
+	if ! diff "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}" "${DTOR_PLUGIN_TEST_LOG_FILE}" > /dev/null 2>&1; then
+		PRNERR "FAILED : Detected difference between \"${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}\" and \"${DTOR_PLUGIN_TEST_LOG_FILE}\""
+		_FOUND_ERROR=1
+	else
+		PRNINFO "SUCCEED : The same result(\"${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}\" and \"${DTOR_PLUGIN_TEST_LOG_FILE}\")"
+	fi
+
+	#
+	# Compare file line counts
+	#
+	DTOR_AR_LOGCNT=$(cat -v "${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}" | grep -c 'K2H_' | tr -d '\n')
+	SVR_AR_LOGCNT=$(cat -v "${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}" | grep -c 'K2H_' | tr -d '\n')
+	PLUGIN_LOGCNT=$(grep -c -e 'DEL_KEY' -e 'SET_ALL' -e 'REP_VAL' -e 'REP_SKEY' -e 'OW_VAL' -e 'REP_ATTR' -e 'REN_KEY' "${DTOR_PLUGIN_TEST_LOG_FILE}" | tr -d '\n')
+
+	if [ -n "${DTOR_AR_LOGCNT}" ] && [ -n "${SVR_AR_LOGCNT}" ] && [ -n "${PLUGIN_LOGCNT}" ]  && [ "${DTOR_AR_LOGCNT}" -eq "${SVR_AR_LOGCNT}" ] && [ "${DTOR_AR_LOGCNT}" -eq "${PLUGIN_LOGCNT}" ]; then
+		PRNINFO "SUCCEED : Archive log line count is same"
+	else
+		PRNERR "FAILED : Archive log line count is different"
+		print_log_detail
+		_FOUND_ERROR=1
+	fi
+
+	return "${_FOUND_ERROR}"
+}
+
+#
+# Stop process
+#
+stop_process()
+{
+	if [ $# -eq 0 ]; then
+		return 1
+	fi
+	_STOP_PIDS="$*"
+
+	#
+	# Send HUP
+	#
+	for _ONE_PID in ${_STOP_PIDS}; do
+		if ps -p "${_ONE_PID}" >/dev/null 2>&1; then
+			kill -HUP "${_ONE_PID}" > /dev/null 2>&1
+		fi
+		sleep "${WAIT_SEC_AFTER_SEND_HUP}"
+	done
+
+	#
+	# Force stop processes if existed
+	#
+	_STOP_RESULT=0
+	for _ONE_PID in ${_STOP_PIDS}; do
+		_MAX_TRYCOUNT=10
+
+		while [ "${_MAX_TRYCOUNT}" -gt 0 ]; do
+			#
+			# Check running status
+			#
+			if ! ps -p "${_ONE_PID}" >/dev/null 2>&1; then
+				break
+			fi
+			#
+			# Send KILL
+			#
+			kill -KILL "${_ONE_PID}" > /dev/null 2>&1
+			sleep "${WAIT_SEC_AFTER_SEND_KILL}"
+			if ! ps -p "${_ONE_PID}" >/dev/null 2>&1; then
+				break
+			fi
+			_MAX_TRYCOUNT=$((_MAX_TRYCOUNT - 1))
+		done
+
+		if [ "${_MAX_TRYCOUNT}" -le 0 ]; then
+			# shellcheck disable=SC2009
+			if ps -p "${_ONE_PID}" | grep -v PID | grep -q -i 'defunct'; then
+				PRNWARN "Could not stop ${_ONE_PID} process, because it has defunct status. So assume we were able to stop it."
+			else
+				PRNERR "Could not stop ${_ONE_PID} process"
+				_STOP_RESULT=1
+			fi
+		fi
+	done
+
+	return "${_STOP_RESULT}"
+}
+
+#
+# Stop all processes
+#
+stop_all_processes()
+{
+	if ! stop_process "${K2HTPDTORSVRPID} ${CHMPXSLVPID} ${CHMPXSVRPID} ${CHMPXSLVTRANSPID} ${K2HTPDTORSVRTRANSPID} ${CHMPXSVRTRANSPID}"; then
+		PRNERR "Could not stop some processes."
+		return 1
+	fi
+	return 0
+}
+
+#
+# Print detail
+#
+print_log_detail()
+{
+	echo "    [DETAIL] : Slave Archive Log"
+	if [ -f "${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}" ]; then
+		sed -e 's/^/      /g' "${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}"
+	fi
+
+	echo "    [DETAIL] : Server Archive Log"
+	if [ -f "${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}" ]; then
+		sed -e 's/^/      /g' "${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}"
+	fi
+
+	echo "    [DETAIL] : Plugin Log"
+	if [ -f "${DTOR_PLUGIN_TEST_LOG_FILE}" ]; then
+		sed -e 's/^/      /g' "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	fi
+
+	return 0
+}
+
+#
+# Cleanup files
+#
+cleanup_files()
+{
+	rm -f "${TEST_CHMPX_SVR_LOG}"
+	rm -f "${TEST_CHMPX_SLV_LOG}"
+	rm -f "${TEST_CHMPX_TRANS_SVR_LOG}"
+	rm -f "${TEST_CHMPX_TRANS_SLV_LOG}"
+	rm -f "${TEST_K2HTPDTORSVR_TRANS_SVR_LOG}"
+	rm -f "${TEST_K2HTPDTORSVR_SVR_LOG}"
+
+	rm -f "${DTOR_TEST_SLV_ARCHIVE_LOG_FILE}"
+	rm -f "${DTOR_TRANS_TEST_SLV_ARCHIVE_LOG_FILE}"
+	rm -f "${DTOR_TEST_SVR_ARCHIVE_LOG_FILE}"
+	rm -f "${DTOR_TRANS_TEST_SVR_ARCHIVE_LOG_FILE}"
+	rm -f "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	rm -f "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}"
+
+	rm -f "${CLONE_K2HTPDTOR_SVR_PLUGIN_TOOL}"
+	rm -f "${K2H_TEST_FILE}"
+	rm -f "${K2H_TRANS_TEST_FILE}"
+	rm -f "${DTOR_NP_DIR}/${DTOR_NP_FILE_PREFIX}"*
+
+	return 0
+}
+
+#--------------------------------------------------------------
+# Parse options
+#--------------------------------------------------------------
+#
+# Variables
+#
+IS_FOUND_TEST_TYPE_OPT=0
+DO_INI_CONF=0
+DO_YAML_CONF=0
+DO_JSON_CONF=0
+DO_JSON_STRING=0
+DO_JSON_ENV=0
+DEBUGMODE=""
+
+while [ $# -ne 0 ]; do
+	if [ -z "$1" ]; then
+		break
+
+	elif [ "$1" = "-h" ] || [ "$1" = "-H" ] || [ "$1" = "--help" ] || [ "$1" = "--HELP" ]; then
+		func_usage "${PRGNAME}"
+		exit 0
+
+	elif [ "$1" = "ini_conf" ] || [ "$1" = "INI_CONF" ]; then
+		if [ "${DO_INI_CONF}" -eq 1 ]; then
+			PRNERR "Already specified \"ini_conf\" mode."
 			exit 1
 		fi
-		shift
-	done
+		DO_INI_CONF=1
+		IS_FOUND_TEST_TYPE_OPT=1
+
+	elif [ "$1" = "yaml_conf" ] || [ "$1" = "YAML_CONF" ]; then
+		if [ "${DO_YAML_CONF}" -eq 1 ]; then
+			PRNERR "Already specified \"yaml_conf\" mode."
+			exit 1
+		fi
+		DO_YAML_CONF=1
+		IS_FOUND_TEST_TYPE_OPT=1
+
+	elif [ "$1" = "json_conf" ] || [ "$1" = "JSON_CONF" ]; then
+		if [ "${DO_JSON_CONF}" -eq 1 ]; then
+			PRNERR "Already specified \"json_conf\" mode."
+			exit 1
+		fi
+		DO_JSON_CONF=1
+		IS_FOUND_TEST_TYPE_OPT=1
+
+	elif [ "$1" = "json_string" ] || [ "$1" = "JSON_STRING" ]; then
+		if [ "${DO_JSON_STRING}" -eq 1 ]; then
+			PRNERR "Already specified \"json_string\" mode."
+			exit 1
+		fi
+		DO_JSON_STRING=1
+		IS_FOUND_TEST_TYPE_OPT=1
+
+	elif [ "$1" = "json_env" ] || [ "$1" = "JSON_ENV" ]; then
+		if [ "${DO_JSON_ENV}" -eq 1 ]; then
+			PRNERR "Already specified \"json_env\" mode."
+			exit 1
+		fi
+		DO_JSON_ENV=1
+		IS_FOUND_TEST_TYPE_OPT=1
+
+	elif [ "$1" = "silent" ] || [ "$1" = "SILENT" ]; then
+		if [ -n "${DEBUGMODE}" ]; then
+			PRNERR "Already specified \"silent\", \"err\", \"wan\" or \"msg\" option."
+			exit 1
+		fi
+		DEBUGMODE="silent"
+
+	elif [ "$1" = "err" ] || [ "$1" = "ERR" ] || [ "$1" = "error" ] || [ "$1" = "ERROR" ]; then
+		if [ -n "${DEBUGMODE}" ]; then
+			PRNERR "Already specified \"silent\", \"err\", \"wan\" or \"msg\" option."
+			exit 1
+		fi
+		DEBUGMODE="err"
+
+	elif [ "$1" = "wan" ] || [ "$1" = "WAN" ] || [ "$1" = "warn" ] || [ "$1" = "WARN" ] || [ "$1" = "warning" ] || [ "$1" = "WARNING" ]; then
+		if [ -n "${DEBUGMODE}" ]; then
+			PRNERR "Already specified \"silent\", \"err\", \"wan\" or \"msg\" option."
+			exit 1
+		fi
+		DEBUGMODE="wan"
+
+	elif [ "$1" = "msg" ] || [ "$1" = "MSG" ] || [ "$1" = "message" ] || [ "$1" = "MESSAGE" ]; then
+		if [ -n "${DEBUGMODE}" ]; then
+			PRNERR "Already specified \"silent\", \"err\", \"wan\" or \"msg\" option."
+			exit 1
+		fi
+		DEBUGMODE="msg"
+
+	else
+		PRNERR "Unknown option $1 specified."
+		exit 1
+	fi
+	shift
+done
+
+#
+# Check and Set values
+#
+if [ "${IS_FOUND_TEST_TYPE_OPT}" -eq 0 ]; then
+	DO_INI_CONF=1
+	DO_YAML_CONF=0
+	DO_JSON_CONF=0
+	DO_JSON_STRING=0
+	DO_JSON_ENV=0
+fi
+if [ -z "${DEBUGMODE}" ]; then
+	DEBUGMODE="silent"
 fi
 
-##############################################################
-# Common initialize
-##############################################################
-#
-# copy
-#
-cp -p ${K2HTPSCRIPTDIR}/k2htpdtorsvr_plugin.sh /tmp/k2htpdtorsvr_plugin.sh
+#==============================================================
+# Initialize
+#==============================================================
+PRNTITLE "INITIALIZE BEFORE TEST"
 
 #
-# Parameter
+# Check binary path
 #
-DTOR_TEST_SERVER_JSON_STR=`grep 'DTOR_TEST_SERVER_JSON=' ${K2HTPSCRIPTDIR}/test_json_string.data 2>/dev/null | sed 's/DTOR_TEST_SERVER_JSON=//g' 2>/dev/null`
-DTOR_TEST_SLAVE_JSON_STR=`grep 'DTOR_TEST_SLAVE_JSON=' ${K2HTPSCRIPTDIR}/test_json_string.data 2>/dev/null | sed 's/DTOR_TEST_SLAVE_JSON=//g' 2>/dev/null`
-DTOR_TEST_TRANS_SERVER_JSON_STR=`grep 'DTOR_TEST_TRANS_SERVER_JSON=' ${K2HTPSCRIPTDIR}/test_json_string.data 2>/dev/null | sed 's/DTOR_TEST_TRANS_SERVER_JSON=//g' 2>/dev/null`
-DTOR_TEST_TRANS_SLAVE_JSON_STR=`grep 'DTOR_TEST_TRANS_SLAVE_JSON=' ${K2HTPSCRIPTDIR}/test_json_string.data 2>/dev/null | sed 's/DTOR_TEST_TRANS_SLAVE_JSON=//g' 2>/dev/null`
+if ! CHMPXBIN=$(command -v chmpx | tr -d '\n'); then
+	PRNERR "Not found chmpx binary"
+	exit 1
+fi
 
-##############################################################
+#
+# Copy plugin script
+#
+if ! cp -p "${K2HTPDTOR_SVR_PLUGIN_TOOL}" "${CLONE_K2HTPDTOR_SVR_PLUGIN_TOOL}"; then
+	PRNERR "Failed to copy ${K2HTPDTOR_SVR_PLUGIN_TOOL} file to /tmp"
+	exit 1
+fi
+
+#
+# JSON String data
+#
+DTOR_TEST_SERVER_JSON_STR=$(grep 'DTOR_TEST_SERVER_JSON=' "${CFG_JSON_STRING_DATA_FILE}" | sed -e 's/DTOR_TEST_SERVER_JSON=//g' | tr -d '\n')
+DTOR_TEST_SLAVE_JSON_STR=$(grep 'DTOR_TEST_SLAVE_JSON=' "${CFG_JSON_STRING_DATA_FILE}" | sed -e 's/DTOR_TEST_SLAVE_JSON=//g' | tr -d '\n')
+DTOR_TEST_TRANS_SERVER_JSON_STR=$(grep 'DTOR_TEST_TRANS_SERVER_JSON=' "${CFG_JSON_STRING_DATA_FILE}" | sed -e 's/DTOR_TEST_TRANS_SERVER_JSON=//g' | tr -d '\n')
+DTOR_TEST_TRANS_SLAVE_JSON_STR=$(grep 'DTOR_TEST_TRANS_SLAVE_JSON=' "${CFG_JSON_STRING_DATA_FILE}" | sed -e 's/DTOR_TEST_TRANS_SLAVE_JSON=//g' | tr -d '\n')
+
+#
+# Change current directory
+#
+cd "${TESTDIR}" || exit 1
+
+#
+# Result flag
+#
+TEST_RESULT=0
+
+PRNSUCCEED "INITIALIZE BEFORE TEST"
+
+#==============================================================
 # Start INI conf file
-##############################################################
-if [ "X${DO_INI_CONF}" = "Xyes" ]; then
-	echo ""
-	echo ""
-	echo "====== START TEST FOR INI CONF FILE ========================"
-	echo ""
-	CONF_FILE_EXT=".ini"
+#==============================================================
+if [ "${DO_INI_CONF}" -eq 1 ]; then
+	PRNTITLE "TEST FOR INI CONF FILE"
 
-	##############
-	# Initialize
-	##############
-	echo "------ Clear old log ---------------------------------------"
-	#
-	# Clear logs
-	#
-	rm -f /tmp/dtor_test_slave_archive.log
-	rm -f /tmp/dtor_test_trans_slave_archive.log
-	rm -f /tmp/k2hftdtorsvr_archive.log
-	rm -f /tmp/k2hftdtorsvr_trans_archive.log
-	rm -f /tmp/k2hftdtorsvr_plugin.log
-	rm -f /tmp/k2hftdtorsvr_trans_plugin.log
-	rm -f /tmp/k2hftdtorsvr.k2h
-	rm -f /tmp/k2hftdtorsvr_trans.k2h
-	rm -f /tmp/k2htpdtorsvr_np_*
+	#----------------------------------------------------------
+	# Cleanup
+	#----------------------------------------------------------
+	cleanup_files
+	touch "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	touch "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}"
 
-	##############
-	# Run
-	##############
+	#----------------------------------------------------------
+	# RUN all test processes
+	#----------------------------------------------------------
+	# [NOTE]
+	# The process runs in the background, so it doesn't do any error checking.
+	# If it fails to start, an error will occur in subsequent tests.
 	#
-	# chmpx for trans server
-	#
-	echo "------ RUN chmpx on trans server side ----------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSVRTRANSPID=$!
-	echo "chmpx on trans server side pid = ${CHMPXSVRTRANSPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on trans server
-	#
-	echo "------ RUN k2htpdtorsvr process on trans server ------------"
-	${DTORSVRBIN} -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	K2HTPDTORSVRTRANSPID=$!
-	echo "k2htpdtorsvr process on trans server pid = ${K2HTPDTORSVRTRANSPID}"
-	sleep 1
-
-	#
-	# chmpx for trans slave
-	#
-	echo "------ RUN chmpx on trans slave side -----------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_slave${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSLVTRANSPID=$!
-	echo "chmpx on trans slave side pid = ${CHMPXSLVTRANSPID}"
-	sleep 5
-
-	#
-	# chmpx for server
-	#
-	echo "------ RUN chmpx on server side ----------------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSVRPID=$!
-	echo "chmpx on server side pid = ${CHMPXSVRPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on server
-	#
-	echo "------ RUN k2htpdtorsvr process on server ------------------"
-	${DTORSVRBIN} -conf ${K2HTPSCRIPTDIR}/dtor_test_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	K2HTPDTORSVRPID=$!
-	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
-	sleep 1
-
-	#
-	# chmpx for slave
-	#
-	echo "------ RUN chmpx on slave side -----------------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_slave${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSLVPID=$!
-	echo "chmpx on slave side pid = ${CHMPXSLVPID}"
-	sleep 5
-
-	#
-	# test client process
-	#
-	echo "------ RUN & START test client process on slave side -------"
-	${DTORCLTBIN} -f ${K2HTPSCRIPTDIR}/dtor_test_archive.data -l ${DTORLIBSO} -p ${K2HTPSCRIPTDIR}/dtor_test_slave${CONF_FILE_EXT} -c 1
-	sleep 10
-
-	##############
-	# Stop
-	##############
-	echo "------ STOP all processes ----------------------------------"
-	kill -HUP ${K2HTPDTORSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVTRANSPID}
-	sleep 1
-	kill -HUP ${K2HTPDTORSVRTRANSPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRTRANSPID}
-	sleep 1
-	kill -9 ${K2HTPDTORSVRPID} ${CHMPXSLVPID} ${CHMPXSVRPID} ${CHMPXSLVTRANSPID} ${K2HTPDTORSVRTRANSPID} ${CHMPXSVRTRANSPID} > /dev/null 2>&1
-
-	##############
-	# Check
-	##############
-	echo "------ Check all result by testing -------------------------"
-	cmp /tmp/dtor_test_trans_slave_archive.log /tmp/dtor_test_slave_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
-		exit 1
+	if ! run_all_processes "ini"; then
+		TEST_RESULT=1
 	fi
 
-	cmp /tmp/k2hftdtorsvr_trans_archive.log /tmp/k2hftdtorsvr_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Stop all processes
+	#----------------------------------------------------------
+	PRNMSG "STOP ALL PROCESSES"
+
+	if ! stop_all_processes; then
+		PRNERR "FAILED : STOP ALL PROCESSES"
+		TEST_RESULT=1
+	else
+		PRNINFO "SUCCEED : STOP ALL PROCESSES"
 	fi
 
-	diff /tmp/k2hftdtorsvr_trans_plugin.log /tmp/k2hftdtorsvr_plugin.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Check result
+	#----------------------------------------------------------
+	if ! check_result; then
+		TEST_RESULT=1
 	fi
 
-	DTOR_AR_LOGCNT=`cat -v /tmp/dtor_test_slave_archive.log | grep K2H_ | wc -l`
-	SVR_AR_LOGCNT=`cat -v /tmp/k2hftdtorsvr_archive.log | grep K2H_ | wc -l`
-	PLUGIN_LOGCNT=`grep -e'DEL_KEY' -e'SET_ALL' -e'REP_VAL' -e'REP_SKEY' -e'OW_VAL' -e'REP_ATTR' -e'REN_KEY' /tmp/k2hftdtorsvr_plugin.log | wc -l`
-
-	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
-		echo "RESULT --> FAILED"
-		echo "(archive log line count is different)"
-		exit 1
+	#----------------------------------------------------------
+	# Result
+	#----------------------------------------------------------
+	if [ "${TEST_RESULT}" -ne 0 ]; then
+		PRNERR "FAILED: TEST FOR INI CONF FILE"
+	else
+		PRNSUCCEED "TEST FOR INI CONF FILE"
 	fi
-
-	echo "INI CONF FILE TEST RESULT --> SUCCEED"
 fi
 
-##############################################################
-# Start yaml conf file
-##############################################################
-if [ "X${DO_YAML_CONF}" = "Xyes" ]; then
-	echo ""
-	echo ""
-	echo "====== START TEST FOR YAML CONF FILE ======================="
-	echo ""
-	CONF_FILE_EXT=".yaml"
+#==============================================================
+# Start YAML conf file
+#==============================================================
+if [ "${TEST_RESULT}" -eq 0 ] && [ "${DO_YAML_CONF}" -eq 1 ]; then
+	PRNTITLE "TEST FOR YAML CONF FILE"
 
-	##############
-	# Initialize
-	##############
-	echo "------ Clear old log ---------------------------------------"
-	#
-	# Clear logs
-	#
-	rm -f /tmp/dtor_test_slave_archive.log
-	rm -f /tmp/dtor_test_trans_slave_archive.log
-	rm -f /tmp/k2hftdtorsvr_archive.log
-	rm -f /tmp/k2hftdtorsvr_trans_archive.log
-	rm -f /tmp/k2hftdtorsvr_plugin.log
-	rm -f /tmp/k2hftdtorsvr_trans_plugin.log
-	rm -f /tmp/k2hftdtorsvr.k2h
-	rm -f /tmp/k2hftdtorsvr_trans.k2h
-	rm -f /tmp/k2htpdtorsvr_np_*
+	#----------------------------------------------------------
+	# Cleanup
+	#----------------------------------------------------------
+	cleanup_files
+	touch "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	touch "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}"
 
-	##############
-	# Run
-	##############
+	#----------------------------------------------------------
+	# RUN all test processes
+	#----------------------------------------------------------
+	# [NOTE]
+	# The process runs in the background, so it doesn't do any error checking.
+	# If it fails to start, an error will occur in subsequent tests.
 	#
-	# chmpx for trans server
-	#
-	echo "------ RUN chmpx on trans server side ----------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSVRTRANSPID=$!
-	echo "chmpx on trans server side pid = ${CHMPXSVRTRANSPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on trans server
-	#
-	echo "------ RUN k2htpdtorsvr process on trans server ------------"
-	${DTORSVRBIN} -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	K2HTPDTORSVRTRANSPID=$!
-	echo "k2htpdtorsvr process on trans server pid = ${K2HTPDTORSVRTRANSPID}"
-	sleep 1
-
-	#
-	# chmpx for trans slave
-	#
-	echo "------ RUN chmpx on trans slave side -----------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_slave${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSLVTRANSPID=$!
-	echo "chmpx on trans slave side pid = ${CHMPXSLVTRANSPID}"
-	sleep 5
-
-	#
-	# chmpx for server
-	#
-	echo "------ RUN chmpx on server side ----------------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSVRPID=$!
-	echo "chmpx on server side pid = ${CHMPXSVRPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on server
-	#
-	echo "------ RUN k2htpdtorsvr process on server ------------------"
-	${DTORSVRBIN} -conf ${K2HTPSCRIPTDIR}/dtor_test_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	K2HTPDTORSVRPID=$!
-	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
-	sleep 1
-
-	#
-	# chmpx for slave
-	#
-	echo "------ RUN chmpx on slave side -----------------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_slave${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSLVPID=$!
-	echo "chmpx on slave side pid = ${CHMPXSLVPID}"
-	sleep 5
-
-	#
-	# test client process
-	#
-	echo "------ RUN & START test client process on slave side -------"
-	${DTORCLTBIN} -f ${K2HTPSCRIPTDIR}/dtor_test_archive.data -l ${DTORLIBSO} -p ${K2HTPSCRIPTDIR}/dtor_test_slave${CONF_FILE_EXT} -c 1
-	sleep 10
-
-	##############
-	# Stop
-	##############
-	echo "------ STOP all processes ----------------------------------"
-	kill -HUP ${K2HTPDTORSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVTRANSPID}
-	sleep 1
-	kill -HUP ${K2HTPDTORSVRTRANSPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRTRANSPID}
-	sleep 1
-	kill -9 ${K2HTPDTORSVRPID} ${CHMPXSLVPID} ${CHMPXSVRPID} ${CHMPXSLVTRANSPID} ${K2HTPDTORSVRTRANSPID} ${CHMPXSVRTRANSPID} > /dev/null 2>&1
-
-	##############
-	# Check
-	##############
-	echo "------ Check all result by testing -------------------------"
-	cmp /tmp/dtor_test_trans_slave_archive.log /tmp/dtor_test_slave_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
-		exit 1
+	if ! run_all_processes "yaml"; then
+		TEST_RESULT=1
 	fi
 
-	cmp /tmp/k2hftdtorsvr_trans_archive.log /tmp/k2hftdtorsvr_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Stop all processes
+	#----------------------------------------------------------
+	PRNMSG "STOP ALL PROCESSES"
+
+	if ! stop_all_processes; then
+		PRNERR "FAILED : STOP ALL PROCESSES"
+		TEST_RESULT=1
+	else
+		PRNINFO "SUCCEED : STOP ALL PROCESSES"
 	fi
 
-	diff /tmp/k2hftdtorsvr_trans_plugin.log /tmp/k2hftdtorsvr_plugin.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Check result
+	#----------------------------------------------------------
+	if ! check_result; then
+		TEST_RESULT=1
 	fi
 
-	DTOR_AR_LOGCNT=`cat -v /tmp/dtor_test_slave_archive.log | grep K2H_ | wc -l`
-	SVR_AR_LOGCNT=`cat -v /tmp/k2hftdtorsvr_archive.log | grep K2H_ | wc -l`
-	PLUGIN_LOGCNT=`grep -e'DEL_KEY' -e'SET_ALL' -e'REP_VAL' -e'REP_SKEY' -e'OW_VAL' -e'REP_ATTR' -e'REN_KEY' /tmp/k2hftdtorsvr_plugin.log | wc -l`
-
-	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
-		echo "RESULT --> FAILED"
-		echo "(archive log line count is different)"
-		exit 1
+	#----------------------------------------------------------
+	# Result
+	#----------------------------------------------------------
+	if [ "${TEST_RESULT}" -ne 0 ]; then
+		PRNERR "FAILED: TEST FOR YAML CONF FILE"
+	else
+		PRNSUCCEED "TEST FOR YAML CONF FILE"
 	fi
-
-	echo "YAML CONF FILE TEST RESULT --> SUCCEED"
 fi
 
-##############################################################
-# Start json conf file
-##############################################################
-if [ "X${DO_JSON_CONF}" = "Xyes" ]; then
-	echo ""
-	echo ""
-	echo "====== START TEST FOR JSON CONF FILE ======================="
-	echo ""
-	CONF_FILE_EXT=".json"
+#==============================================================
+# Start JSON conf file
+#==============================================================
+if [ "${TEST_RESULT}" -eq 0 ] && [ "${DO_JSON_CONF}" -eq 1 ]; then
+	PRNTITLE "TEST FOR JSON CONF FILE"
 
-	##############
-	# Initialize
-	##############
-	echo "------ Clear old log ---------------------------------------"
-	#
-	# Clear logs
-	#
-	rm -f /tmp/dtor_test_slave_archive.log
-	rm -f /tmp/dtor_test_trans_slave_archive.log
-	rm -f /tmp/k2hftdtorsvr_archive.log
-	rm -f /tmp/k2hftdtorsvr_trans_archive.log
-	rm -f /tmp/k2hftdtorsvr_plugin.log
-	rm -f /tmp/k2hftdtorsvr_trans_plugin.log
-	rm -f /tmp/k2hftdtorsvr.k2h
-	rm -f /tmp/k2hftdtorsvr_trans.k2h
-	rm -f /tmp/k2htpdtorsvr_np_*
+	#----------------------------------------------------------
+	# Cleanup
+	#----------------------------------------------------------
+	cleanup_files
+	touch "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	touch "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}"
 
-	##############
-	# Run
-	##############
+	#----------------------------------------------------------
+	# RUN all test processes
+	#----------------------------------------------------------
+	# [NOTE]
+	# The process runs in the background, so it doesn't do any error checking.
+	# If it fails to start, an error will occur in subsequent tests.
 	#
-	# chmpx for trans server
-	#
-	echo "------ RUN chmpx on trans server side ----------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSVRTRANSPID=$!
-	echo "chmpx on trans server side pid = ${CHMPXSVRTRANSPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on trans server
-	#
-	echo "------ RUN k2htpdtorsvr process on trans server ------------"
-	${DTORSVRBIN} -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	K2HTPDTORSVRTRANSPID=$!
-	echo "k2htpdtorsvr process on trans server pid = ${K2HTPDTORSVRTRANSPID}"
-	sleep 1
-
-	#
-	# chmpx for trans slave
-	#
-	echo "------ RUN chmpx on trans slave side -----------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_trans_slave${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSLVTRANSPID=$!
-	echo "chmpx on trans slave side pid = ${CHMPXSLVTRANSPID}"
-	sleep 5
-
-	#
-	# chmpx for server
-	#
-	echo "------ RUN chmpx on server side ----------------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSVRPID=$!
-	echo "chmpx on server side pid = ${CHMPXSVRPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on server
-	#
-	echo "------ RUN k2htpdtorsvr process on server ------------------"
-	${DTORSVRBIN} -conf ${K2HTPSCRIPTDIR}/dtor_test_server${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	K2HTPDTORSVRPID=$!
-	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
-	sleep 1
-
-	#
-	# chmpx for slave
-	#
-	echo "------ RUN chmpx on slave side -----------------------------"
-	chmpx -conf ${K2HTPSCRIPTDIR}/dtor_test_slave${CONF_FILE_EXT} -d ${DEBUGMODE} &
-	CHMPXSLVPID=$!
-	echo "chmpx on slave side pid = ${CHMPXSLVPID}"
-	sleep 5
-
-	#
-	# test client process
-	#
-	echo "------ RUN & START test client process on slave side -------"
-	${DTORCLTBIN} -f ${K2HTPSCRIPTDIR}/dtor_test_archive.data -l ${DTORLIBSO} -p ${K2HTPSCRIPTDIR}/dtor_test_slave${CONF_FILE_EXT} -c 1
-	sleep 10
-
-	##############
-	# Stop
-	##############
-	echo "------ STOP all processes ----------------------------------"
-	kill -HUP ${K2HTPDTORSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVTRANSPID}
-	sleep 1
-	kill -HUP ${K2HTPDTORSVRTRANSPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRTRANSPID}
-	sleep 1
-	kill -9 ${K2HTPDTORSVRPID} ${CHMPXSLVPID} ${CHMPXSVRPID} ${CHMPXSLVTRANSPID} ${K2HTPDTORSVRTRANSPID} ${CHMPXSVRTRANSPID} > /dev/null 2>&1
-
-	##############
-	# Check
-	##############
-	echo "------ Check all result by testing -------------------------"
-	cmp /tmp/dtor_test_trans_slave_archive.log /tmp/dtor_test_slave_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
-		exit 1
+	if ! run_all_processes "json"; then
+		TEST_RESULT=1
 	fi
 
-	cmp /tmp/k2hftdtorsvr_trans_archive.log /tmp/k2hftdtorsvr_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Stop all processes
+	#----------------------------------------------------------
+	PRNMSG "STOP ALL PROCESSES"
+
+	if ! stop_all_processes; then
+		PRNERR "FAILED : STOP ALL PROCESSES"
+		TEST_RESULT=1
+	else
+		PRNINFO "SUCCEED : STOP ALL PROCESSES"
 	fi
 
-	diff /tmp/k2hftdtorsvr_trans_plugin.log /tmp/k2hftdtorsvr_plugin.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Check result
+	#----------------------------------------------------------
+	if ! check_result; then
+		TEST_RESULT=1
 	fi
 
-	DTOR_AR_LOGCNT=`cat -v /tmp/dtor_test_slave_archive.log | grep K2H_ | wc -l`
-	SVR_AR_LOGCNT=`cat -v /tmp/k2hftdtorsvr_archive.log | grep K2H_ | wc -l`
-	PLUGIN_LOGCNT=`grep -e'DEL_KEY' -e'SET_ALL' -e'REP_VAL' -e'REP_SKEY' -e'OW_VAL' -e'REP_ATTR' -e'REN_KEY' /tmp/k2hftdtorsvr_plugin.log | wc -l`
-
-	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
-		echo "RESULT --> FAILED"
-		echo "(archive log line count is different)"
-		exit 1
+	#----------------------------------------------------------
+	# Result
+	#----------------------------------------------------------
+	if [ "${TEST_RESULT}" -ne 0 ]; then
+		PRNERR "FAILED: TEST FOR JSON CONF FILE"
+	else
+		PRNSUCCEED "TEST FOR JSON CONF FILE"
 	fi
-
-	echo "JSON CONF FILE TEST RESULT --> SUCCEED"
 fi
 
-##############################################################
-# Start json string conf
-##############################################################
-if [ "X${DO_JSON_STRING}" = "Xyes" ]; then
-	echo ""
-	echo ""
-	echo "====== START TEST FOR JSON STRING =========================="
-	echo ""
+#==============================================================
+# Start JSON string
+#==============================================================
+if [ "${TEST_RESULT}" -eq 0 ] && [ "${DO_JSON_STRING}" -eq 1 ]; then
+	PRNTITLE "TEST FOR JSON STRING"
 
-	##############
-	# Initialize
-	##############
-	echo "------ Clear old log ---------------------------------------"
-	#
-	# Clear logs
-	#
-	rm -f /tmp/dtor_test_slave_archive.log
-	rm -f /tmp/dtor_test_trans_slave_archive.log
-	rm -f /tmp/k2hftdtorsvr_archive.log
-	rm -f /tmp/k2hftdtorsvr_trans_archive.log
-	rm -f /tmp/k2hftdtorsvr_plugin.log
-	rm -f /tmp/k2hftdtorsvr_trans_plugin.log
-	rm -f /tmp/k2hftdtorsvr.k2h
-	rm -f /tmp/k2hftdtorsvr_trans.k2h
-	rm -f /tmp/k2htpdtorsvr_np_*
+	#----------------------------------------------------------
+	# Cleanup
+	#----------------------------------------------------------
+	cleanup_files
+	touch "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	touch "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}"
 
-	##############
-	# Run
-	##############
+	#----------------------------------------------------------
+	# RUN all test processes
+	#----------------------------------------------------------
+	# [NOTE]
+	# The process runs in the background, so it doesn't do any error checking.
+	# If it fails to start, an error will occur in subsequent tests.
 	#
-	# chmpx for trans server
-	#
-	echo "------ RUN chmpx on trans server side ----------------------"
-	chmpx -json "${DTOR_TEST_TRANS_SERVER_JSON_STR}" -d ${DEBUGMODE} &
-	CHMPXSVRTRANSPID=$!
-	echo "chmpx on trans server side pid = ${CHMPXSVRTRANSPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on trans server
-	#
-	echo "------ RUN k2htpdtorsvr process on trans server ------------"
-	${DTORSVRBIN} -json "${DTOR_TEST_TRANS_SERVER_JSON_STR}" -d ${DEBUGMODE} &
-	K2HTPDTORSVRTRANSPID=$!
-	echo "k2htpdtorsvr process on trans server pid = ${K2HTPDTORSVRTRANSPID}"
-	sleep 1
-
-	#
-	# chmpx for trans slave
-	#
-	echo "------ RUN chmpx on trans slave side -----------------------"
-	chmpx -json "${DTOR_TEST_TRANS_SLAVE_JSON_STR}" -d ${DEBUGMODE} &
-	CHMPXSLVTRANSPID=$!
-	echo "chmpx on trans slave side pid = ${CHMPXSLVTRANSPID}"
-	sleep 5
-
-	#
-	# chmpx for server
-	#
-	echo "------ RUN chmpx on server side ----------------------------"
-	chmpx -json "${DTOR_TEST_SERVER_JSON_STR}" -d ${DEBUGMODE} &
-	CHMPXSVRPID=$!
-	echo "chmpx on server side pid = ${CHMPXSVRPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on server
-	#
-	echo "------ RUN k2htpdtorsvr process on server ------------------"
-	${DTORSVRBIN} -json "${DTOR_TEST_SERVER_JSON_STR}" -d ${DEBUGMODE} &
-	K2HTPDTORSVRPID=$!
-	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
-	sleep 1
-
-	#
-	# chmpx for slave
-	#
-	echo "------ RUN chmpx on slave side -----------------------------"
-	chmpx -json "${DTOR_TEST_SLAVE_JSON_STR}" -d ${DEBUGMODE} &
-	CHMPXSLVPID=$!
-	echo "chmpx on slave side pid = ${CHMPXSLVPID}"
-	sleep 5
-
-	#
-	# test client process
-	#
-	echo "------ RUN & START test client process on slave side -------"
-	${DTORCLTBIN} -f ${K2HTPSCRIPTDIR}/dtor_test_archive.data -l ${DTORLIBSO} -p "${DTOR_TEST_SLAVE_JSON_STR}" -c 1
-	sleep 10
-
-	##############
-	# Stop
-	##############
-	echo "------ STOP all processes ----------------------------------"
-	kill -HUP ${K2HTPDTORSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVTRANSPID}
-	sleep 1
-	kill -HUP ${K2HTPDTORSVRTRANSPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRTRANSPID}
-	sleep 1
-	kill -9 ${K2HTPDTORSVRPID} ${CHMPXSLVPID} ${CHMPXSVRPID} ${CHMPXSLVTRANSPID} ${K2HTPDTORSVRTRANSPID} ${CHMPXSVRTRANSPID} > /dev/null 2>&1
-
-	##############
-	# Check
-	##############
-	echo "------ Check all result by testing -------------------------"
-	cmp /tmp/dtor_test_trans_slave_archive.log /tmp/dtor_test_slave_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
-		exit 1
+	if ! run_all_processes "jsonstring"; then
+		TEST_RESULT=1
 	fi
 
-	cmp /tmp/k2hftdtorsvr_trans_archive.log /tmp/k2hftdtorsvr_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Stop all processes
+	#----------------------------------------------------------
+	PRNMSG "STOP ALL PROCESSES"
+
+	if ! stop_all_processes; then
+		PRNERR "FAILED : STOP ALL PROCESSES"
+		TEST_RESULT=1
+	else
+		PRNINFO "SUCCEED : STOP ALL PROCESSES"
 	fi
 
-	diff /tmp/k2hftdtorsvr_trans_plugin.log /tmp/k2hftdtorsvr_plugin.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Check result
+	#----------------------------------------------------------
+	if ! check_result; then
+		TEST_RESULT=1
 	fi
 
-	DTOR_AR_LOGCNT=`cat -v /tmp/dtor_test_slave_archive.log | grep K2H_ | wc -l`
-	SVR_AR_LOGCNT=`cat -v /tmp/k2hftdtorsvr_archive.log | grep K2H_ | wc -l`
-	PLUGIN_LOGCNT=`grep -e'DEL_KEY' -e'SET_ALL' -e'REP_VAL' -e'REP_SKEY' -e'OW_VAL' -e'REP_ATTR' -e'REN_KEY' /tmp/k2hftdtorsvr_plugin.log | wc -l`
-
-	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
-		echo "RESULT --> FAILED"
-		echo "(archive log line count is different)"
-		exit 1
+	#----------------------------------------------------------
+	# Result
+	#----------------------------------------------------------
+	if [ "${TEST_RESULT}" -ne 0 ]; then
+		PRNERR "FAILED: TEST FOR JSON STRING"
+	else
+		PRNSUCCEED "TEST FOR JSON STRING"
 	fi
-
-	echo "JSON STRING CONF TEST RESULT --> SUCCEED"
 fi
 
-##############################################################
-# Start json environment conf
-##############################################################
-if [ "X${DO_JSON_ENV}" = "Xyes" ]; then
-	echo ""
-	echo ""
-	echo "====== START TEST FOR JSON ENVIRONMENT ====================="
-	echo ""
+#==============================================================
+# Start JSON environment
+#==============================================================
+if [ "${TEST_RESULT}" -eq 0 ] && [ "${DO_JSON_ENV}" -eq 1 ]; then
+	PRNTITLE "TEST FOR JSON ENV"
 
-	##############
-	# Initialize
-	##############
-	echo "------ Clear old log ---------------------------------------"
-	#
-	# Clear logs
-	#
-	rm -f /tmp/dtor_test_slave_archive.log
-	rm -f /tmp/dtor_test_trans_slave_archive.log
-	rm -f /tmp/k2hftdtorsvr_archive.log
-	rm -f /tmp/k2hftdtorsvr_trans_archive.log
-	rm -f /tmp/k2hftdtorsvr_plugin.log
-	rm -f /tmp/k2hftdtorsvr_trans_plugin.log
-	rm -f /tmp/k2hftdtorsvr.k2h
-	rm -f /tmp/k2hftdtorsvr_trans.k2h
-	rm -f /tmp/k2htpdtorsvr_np_*
+	#----------------------------------------------------------
+	# Cleanup
+	#----------------------------------------------------------
+	cleanup_files
+	touch "${DTOR_PLUGIN_TEST_LOG_FILE}"
+	touch "${DTOR_PLUGIN_TRANS_TEST_LOG_FILE}"
 
-	##############
-	# Run
-	##############
+	#----------------------------------------------------------
+	# RUN all test processes
+	#----------------------------------------------------------
+	# [NOTE]
+	# The process runs in the background, so it doesn't do any error checking.
+	# If it fails to start, an error will occur in subsequent tests.
 	#
-	# chmpx for trans server
-	#
-	echo "------ RUN chmpx on trans server side ----------------------"
-	CHMJSONCONF="${DTOR_TEST_TRANS_SERVER_JSON_STR}" chmpx -d ${DEBUGMODE} &
-	CHMPXSVRTRANSPID=$!
-	echo "chmpx on trans server side pid = ${CHMPXSVRTRANSPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on trans server
-	#
-	echo "------ RUN k2htpdtorsvr process on trans server ------------"
-	DTORSVRJSONCONF="${DTOR_TEST_TRANS_SERVER_JSON_STR}" ${DTORSVRBIN} -d ${DEBUGMODE} &
-	K2HTPDTORSVRTRANSPID=$!
-	echo "k2htpdtorsvr process on trans server pid = ${K2HTPDTORSVRTRANSPID}"
-	sleep 1
-
-	#
-	# chmpx for trans slave
-	#
-	echo "------ RUN chmpx on trans slave side -----------------------"
-	CHMJSONCONF="${DTOR_TEST_TRANS_SLAVE_JSON_STR}" chmpx -d ${DEBUGMODE} &
-	CHMPXSLVTRANSPID=$!
-	echo "chmpx on trans slave side pid = ${CHMPXSLVTRANSPID}"
-	sleep 5
-
-	#
-	# chmpx for server
-	#
-	echo "------ RUN chmpx on server side ----------------------------"
-	CHMJSONCONF="${DTOR_TEST_SERVER_JSON_STR}" chmpx -d ${DEBUGMODE} &
-	CHMPXSVRPID=$!
-	echo "chmpx on server side pid = ${CHMPXSVRPID}"
-	sleep 1
-
-	#
-	# k2htpdtorsvr process on server
-	#
-	echo "------ RUN k2htpdtorsvr process on server ------------------"
-	DTORSVRJSONCONF="${DTOR_TEST_SERVER_JSON_STR}" ${DTORSVRBIN} -d ${DEBUGMODE} &
-	K2HTPDTORSVRPID=$!
-	echo "k2htpdtorsvr process on server pid = ${K2HTPDTORSVRPID}"
-	sleep 1
-
-	#
-	# chmpx for slave
-	#
-	echo "------ RUN chmpx on slave side -----------------------------"
-	CHMJSONCONF="${DTOR_TEST_SLAVE_JSON_STR}" chmpx -d ${DEBUGMODE} &
-	CHMPXSLVPID=$!
-	echo "chmpx on slave side pid = ${CHMPXSLVPID}"
-	sleep 5
-
-	#
-	# test client process
-	#
-	echo "------ RUN & START test client process on slave side -------"
-	${DTORCLTBIN} -f ${K2HTPSCRIPTDIR}/dtor_test_archive.data -l ${DTORLIBSO} -p "${DTOR_TEST_SLAVE_JSON_STR}" -c 1
-	sleep 10
-
-	##############
-	# Stop
-	##############
-	echo "------ STOP all processes ----------------------------------"
-	kill -HUP ${K2HTPDTORSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRPID}
-	sleep 1
-	kill -HUP ${CHMPXSLVTRANSPID}
-	sleep 1
-	kill -HUP ${K2HTPDTORSVRTRANSPID}
-	sleep 1
-	kill -HUP ${CHMPXSVRTRANSPID}
-	sleep 1
-	kill -9 ${K2HTPDTORSVRPID} ${CHMPXSLVPID} ${CHMPXSVRPID} ${CHMPXSLVTRANSPID} ${K2HTPDTORSVRTRANSPID} ${CHMPXSVRTRANSPID} > /dev/null 2>&1
-
-	##############
-	# Check
-	##############
-	echo "------ Check all result by testing -------------------------"
-	cmp /tmp/dtor_test_trans_slave_archive.log /tmp/dtor_test_slave_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare dtor_test_trans_slave_archive.log and dtor_test_slave_archive.log)"
-		exit 1
+	if ! run_all_processes "jsonenv"; then
+		TEST_RESULT=1
 	fi
 
-	cmp /tmp/k2hftdtorsvr_trans_archive.log /tmp/k2hftdtorsvr_archive.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_archive.log and k2hftdtorsvr_archive.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Stop all processes
+	#----------------------------------------------------------
+	PRNMSG "STOP ALL PROCESSES"
+
+	if ! stop_all_processes; then
+		PRNERR "FAILED : STOP ALL PROCESSES"
+		TEST_RESULT=1
+	else
+		PRNINFO "SUCCEED : STOP ALL PROCESSES"
 	fi
 
-	diff /tmp/k2hftdtorsvr_trans_plugin.log /tmp/k2hftdtorsvr_plugin.log > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		echo "RESULT --> FAILED"
-		echo "(compare k2hftdtorsvr_trans_plugin.log and k2hftdtorsvr_plugin.log)"
-		exit 1
+	#----------------------------------------------------------
+	# Check result
+	#----------------------------------------------------------
+	if ! check_result; then
+		TEST_RESULT=1
 	fi
 
-	DTOR_AR_LOGCNT=`cat -v /tmp/dtor_test_slave_archive.log | grep K2H_ | wc -l`
-	SVR_AR_LOGCNT=`cat -v /tmp/k2hftdtorsvr_archive.log | grep K2H_ | wc -l`
-	PLUGIN_LOGCNT=`grep -e'DEL_KEY' -e'SET_ALL' -e'REP_VAL' -e'REP_SKEY' -e'OW_VAL' -e'REP_ATTR' -e'REN_KEY' /tmp/k2hftdtorsvr_plugin.log | wc -l`
-
-	if [ $DTOR_AR_LOGCNT -ne $SVR_AR_LOGCNT -o $DTOR_AR_LOGCNT -ne $PLUGIN_LOGCNT ]; then
-		echo "RESULT --> FAILED"
-		echo "(archive log line count is different)"
-		exit 1
+	#----------------------------------------------------------
+	# Result
+	#----------------------------------------------------------
+	if [ "${TEST_RESULT}" -ne 0 ]; then
+		PRNERR "FAILED: TEST FOR JSON ENV"
+	else
+		PRNSUCCEED "TEST FOR JSON ENV"
 	fi
-
-	echo "JSON STRING CONF TEST RESULT --> SUCCEED"
 fi
 
-##############################################################
-# Finished all test
-##############################################################
+#==============================================================
+# Finish
+#==============================================================
 #
-# Clear
+# Cleanup
 #
-echo "====== Clear all temporary files ==========================="
-rm -f /tmp/dtor_test_slave_archive.log
-rm -f /tmp/dtor_test_trans_slave_archive.log
-rm -f /tmp/k2hftdtorsvr_archive.log
-rm -f /tmp/k2hftdtorsvr_trans_archive.log
-rm -f /tmp/k2hftdtorsvr_plugin.log
-rm -f /tmp/k2hftdtorsvr_trans_plugin.log
-rm -f /tmp/k2htpdtorsvr_plugin.sh
-rm -f /tmp/k2hftdtorsvr.k2h
-rm -f /tmp/k2hftdtorsvr_trans.k2h
-rm -f /tmp/k2htpdtorsvr_np_*
+cleanup_files
 
-echo ""
-echo "====== Finish all =========================================="
+if [ "${TEST_RESULT}" -ne 0 ]; then
+	exit 1
+fi
+
 exit 0
 
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: noexpandtab sw=4 ts=4 fdm=marker
+# vim<600: noexpandtab sw=4 ts=4
 #

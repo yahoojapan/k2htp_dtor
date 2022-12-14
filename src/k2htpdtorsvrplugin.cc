@@ -151,7 +151,6 @@ void* K2htpSvrPlugin::WatchChildExit(void* param)
 	}
 
 	// loop
-	// cppcheck-suppress unmatchedSuppression
 	// cppcheck-suppress knownConditionTrueFalse
 	while(!pPlugin->thread_exit){
 		// blocking child exit
@@ -159,7 +158,6 @@ void* K2htpSvrPlugin::WatchChildExit(void* param)
 		pid_t	childpid= waitpid(-1, &status, 0);
 
 		// check before run plugins
-		// cppcheck-suppress unmatchedSuppression
 		// cppcheck-suppress knownConditionTrueFalse
 		if(pPlugin->thread_exit){
 			break;

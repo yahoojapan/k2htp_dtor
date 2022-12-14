@@ -763,7 +763,6 @@ static bool ParseK2htpdtorsvrYaml(const char* config, PK2HTPDTORSVRINFO pInfo, b
 		// open configuration file
 		if(NULL == (fp = fopen(config, "r"))){
 			ERR_K2HPRN("Could not open configuration file(%s). errno = %d", config, errno);
-			// cppcheck-suppress unmatchedSuppression
 			// cppcheck-suppress resourceLeak
 			return false;
 		}

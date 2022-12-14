@@ -15,32 +15,54 @@
 # REVISION:
 #
 
-#
+#==============================================================
 # This script is test k2htpdtorsvr plugin.
 #
 # Usage: k2htpdtorsvr_plugin.sh <log file path>
-#
+#==============================================================
 
-PRGNAME=`basename $0`
+#--------------------------------------------------------------
+# Common Variables
+#--------------------------------------------------------------
+#PRGNAME=$(basename "${0}")
+SCRIPTDIR=$(dirname "${0}")
+SCRIPTDIR=$(cd "${SCRIPTDIR}" || exit 1; pwd)
 
-if [ $# -ne 1 ]; then
-	echo "${PRGNAME}: Error - parameter is not found."
+#--------------------------------------------------------------
+# Main
+#--------------------------------------------------------------
+if [ $# -ne 1 ] || [ -z "$1" ]; then
+	echo "[ERROR] Parameter is wrong, need to specify <log file path>." 1>&2
 	exit 1
 fi
-FILEPATH=$1
+FILEPATH="$1"
 
-touch $FILEPATH
+#
+# Update / Create file
+#
+if ! touch "${FILEPATH}"; then
+	echo "[ERROR] Could not update(create) ${FILEPATH} file." 1>&2
+	exit 1
+fi
 
 #
 # Loop
 #
-while true; do
-	read TRANSACTIONDATA
-	echo $TRANSACTIONDATA >> $FILEPATH
+echo "Input string to transfer to ${FILEPATH}" 1>&2
+
+IS_LOOP=0
+while [ "${IS_LOOP}" -eq 0 ]; do
+	read -r TRANSACTIONDATA
+	echo "${TRANSACTIONDATA}" >> "${FILEPATH}"
 done
 
+exit 0
+
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: noexpandtab sw=4 ts=4 fdm=marker
+# vim<600: noexpandtab sw=4 ts=4
 #
