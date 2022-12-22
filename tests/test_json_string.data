@@ -20,7 +20,10 @@ DTOR_TEST_TRANS_SERVER_JSON={ 'GLOBAL': { 'FILEVERSION': '1', 'DATE': 'Thu, 17 N
 DTOR_TEST_TRANS_SLAVE_JSON={ 'GLOBAL': { 'FILEVERSION': '1', 'DATE': 'Wed, 04 Nov 2015 11:22:13 +0900', 'GROUP': 'DTORTESTTRANS', 'MODE': 'SLAVE', 'DELIVERMODE': 'random', 'MAXCHMPX': '2', 'REPLICA': '0', 'MAXMQSERVER': '2', 'MAXMQCLIENT': '2', 'MQPERATTACH': '1', 'MAXQPERSERVERMQ': '1', 'MAXQPERCLIENTMQ': '1', 'MAXMQPERCLIENT': '2', 'MAXHISTLOG': '1000', 'PORT': '8030', 'CTLPORT': '8032', 'SELFCTLPORT': '8032', 'RWTIMEOUT': '100', 'RETRYCNT': '1000', 'CONTIMEOUT': '500000', 'MQRWTIMEOUT': '50', 'MQRETRYCNT': '20000', 'DOMERGE': 'on', 'SSL': 'no', 'K2HFULLMAP': 'on', 'K2HMASKBIT': '4', 'K2HCMASKBIT': '4', 'K2HMAXELE': '2' }, 'SVRNODE': [ { 'NAME': 'localhost', 'PORT': '8030', 'CTLPORT': '8031', 'SSL': 'no' } ], 'SLVNODE': [ { 'NAME': '[.]*', 'CTLPORT': '8032' } ], 'K2HTPDTOR': { 'K2HTPDTOR_BROADCAST': 'yes', 'K2HTPDTOR_EXCEPT_KEY': 'test_fill_-', 'K2HTPDTOR_FILE': '/tmp/dtor_test_trans_slave_archive.log' } }
 
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: noexpandtab sw=4 ts=4 fdm=marker
+# vim<600: noexpandtab sw=4 ts=4
 #
