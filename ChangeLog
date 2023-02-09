@@ -1,5 +1,6 @@
 k2htpdtor (1.0.36) unstable; urgency=low
 
+  * Fixed imagetypevars.sh for changing base packages #53
   * Changed CI process flow/OSs and added Alpine OS - #51
   * Updated header and footer in comment lines - #50
   * Updated issue/pullrequest templates - #48
@@ -14,7 +15,7 @@ k2htpdtor (1.0.36) unstable; urgency=low
   * Fixed errors reported by cppcheck 2.9 - #39
   * Enabled external customization of configure.ac and fixed for building - #38
 
- -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 09 Feb 2023 19:15:44 +0900
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 09 Feb 2023 21:39:19 +0900
 
 k2htpdtor (1.0.35) unstable; urgency=low
 
