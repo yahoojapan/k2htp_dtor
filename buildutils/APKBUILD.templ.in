@@ -1,0 +1,120 @@
+#
+# k2htpdtor for K2HASH TRANSACTION PLUGIN.
+#
+# Copyright 2022 Yahoo Japan Corporation.
+#
+# K2HASH TRANSACTION PLUGIN is programmable I/F for processing
+# transaction data from modifying K2HASH data.
+#
+# For the full copyright and license information, please view
+# the license file that was distributed with this source code.
+#
+# AUTHOR:   Takeshi Nakatani
+# CREATE:   Wed, 8 Feb 2023
+# REVISION:
+#
+
+#---------------------------------------------------------------
+# Local varibales as antpickax template
+#---------------------------------------------------------------
+#
+# Set variables by configure
+#
+_git_domain="@GIT_DOMAIN@"
+_organization_name="@GIT_ORG@"
+_repository_name="@GIT_REPO@"
+
+#
+# Set variables by apk_build.sh
+#
+_package_revision=%%BUILD_NUMBER%%
+_configure_option=%%CONFIGUREOPT%%
+_source_archive_url=%%SOURCE_ARCHIVE_URL%%
+
+#---------------------------------------------------------------
+# Main variables for APKBUILD
+#---------------------------------------------------------------
+# Contributor: @DEV_NAME@ <@DEV_EMAIL@>
+# Maintainer: @DEV_NAME@ <@DEV_EMAIL@>
+
+# [NOTE]
+# The $_organization_name is "k2htp_dtor", but the $pkgname should be "k2htpdtor",
+# so adjust with this variable.
+#
+pkgname="k2htpdtor"
+pkgver=@PKG_VERSION@
+pkgrel=$_package_revision
+pkgdesc="@SHORTDESC@"
+
+url="https://chmpx.antpick.ax/"
+arch="x86_64"
+license="MIT"
+
+depends=""
+depends_dev="
+	k2hash-dev
+"
+makedepends="
+	$depends_dev
+	autoconf
+	automake
+	libtool
+	groff
+	util-linux-misc
+	musl-locales
+	procps
+	yaml-dev
+	openssl-dev
+"
+
+install=""
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+"
+
+source="$pkgname-$pkgver.tar.gz%%SOURCE_ARCHIVE_URL%%"
+
+builddir="$srcdir/$pkgname-$pkgver"
+
+#---------------------------------------------------------------
+# Build functions for APKBUILD
+#---------------------------------------------------------------
+prepare() {
+	default_prepare
+	# this function can be omitted if no extra steps are needed
+}
+
+unpack() {
+	default_unpack
+
+	# [NOTE]
+	# A github release archive is unzipped as a directory with the
+	# repository name(k2htp_dtor) and version number.
+	# In this case, change the directory name to the package name
+	# (k2htpdtor) instead of the repository name.
+	#
+	if [ -d "$_repository_name-$pkgver" ]; then
+		mv "$_repository_name-$pkgver" "$pkgname-$pkgver"
+	fi
+}
+
+build() {
+	if [ ! -f configure ]; then
+		./autogen.sh
+	fi
+	./configure --prefix=/usr $_configure_option
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+# [NOTE]
+# Subsequent lines print the checksum of the source archive.
+#
