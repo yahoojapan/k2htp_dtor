@@ -1,3 +1,21 @@
+k2htpdtor (1.0.36) unstable; urgency=low
+
+  * Changed CI process flow/OSs and added Alpine OS - #51
+  * Updated header and footer in comment lines - #50
+  * Updated issue/pullrequest templates - #48
+  * Added ShellCheck processing and reviewed cppcheck - #47
+  * Eliminated unnecessary copies in build_helper.sh - #46
+  * Updated docker/login-action from v1 to v2 - #45
+  * Shared Docker image build logic with other products - #44
+  * Updated github actions process and support os, and fixed bugs - #43
+  * Updated scripts for adding grep params and replacing which to command - #42
+  * Updated common build scripts - #41
+  * Updated Antpickax common scripts and tools under the buildutils directory - #40
+  * Fixed errors reported by cppcheck 2.9 - #39
+  * Enabled external customization of configure.ac and fixed for building - #38
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 09 Feb 2023 19:15:44 +0900
+
 k2htpdtor (1.0.35) unstable; urgency=low
 
   * Bumpup for updating the base Docker image becase of CHMPX updated
