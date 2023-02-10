@@ -52,7 +52,7 @@ license="MIT"
 
 depends=""
 depends_dev="
-	k2hash-dev
+	chmpx-dev
 "
 makedepends="
 	$depends_dev
@@ -69,7 +69,6 @@ makedepends="
 
 install=""
 subpackages="
-	$pkgname-dev
 	$pkgname-doc
 "
 

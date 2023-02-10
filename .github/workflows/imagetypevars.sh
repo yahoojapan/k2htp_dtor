@@ -88,7 +88,7 @@ elif [ "${CI_DOCKER_IMAGE_OSTYPE}" = "alpine" ]; then
 	PKGMGR_UNINSTALL_OPT="del -q --purge --no-progress --no-cache"
 	PKG_INSTALL_CURL="curl"
 	PKG_INSTALL_BASE="k2htpdtor"
-	PKG_INSTALL_DEV="k2htpdtor-dev"
+	PKG_INSTALL_DEV="chmpx-dev k2htpdtor"
 
 elif [ "${CI_DOCKER_IMAGE_OSTYPE}" = "ubuntu" ]; then
 	PKGMGR_NAME="apt-get"
