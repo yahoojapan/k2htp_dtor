@@ -1,3 +1,9 @@
+k2htpdtor (1.0.38) unstable; urgency=low
+
+  * Updated building/packaging logic for ALPINE - #57
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 02 Mar 2023 18:42:42 +0900
+
 k2htpdtor (1.0.37) unstable; urgency=low
 
   * Update package dependencies and remove unnecessary packages - #55
