@@ -191,18 +191,20 @@ echo "${CYEL}-------------------------------------------------------------------
 #
 # Check chmpx binary
 #
-if ! CHMPXBIN=$(command -v chmpx | tr -d '\n'); then
+if ! command -v chmpx >/dev/null 2>&1; then
 	PRNERR "Not found chmpx binary"
 	exit 1
 fi
+CHMPXBIN=$(command -v chmpx | tr -d '\n')
 
 #
 # Check k2htouch tool
 #
-if ! K2HTOUCHBIN=$(command -v k2htouch | tr -d '\n'); then
+if ! command -v k2htouch >/dev/null 2>&1; then
 	PRNERR "Not found k2htouch tool"
 	exit 1
 fi
+CHMPXBIN=$(command -v k2htouch | tr -d '\n')
 
 #==============================================================
 # Run processes
