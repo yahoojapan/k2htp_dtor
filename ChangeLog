@@ -1,3 +1,9 @@
+k2htpdtor (1.0.42) unstable; urgency=low
+
+  * Changed support OS (fedora and ubuntu) and updated tool - #161
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 30 Oct 2023 14:05:29 +0900
+
 k2htpdtor (1.0.41) unstable; urgency=low
 
   * Updated versions of dependent packages - #65
