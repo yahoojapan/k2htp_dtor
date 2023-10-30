@@ -1,3 +1,9 @@
+k2htpdtor (1.0.43) unstable; urgency=low
+
+  * Fixed typo in ChangeLog file - #69
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 30 Oct 2023 16:15:36 +0900
+
 k2htpdtor (1.0.42) unstable; urgency=low
 
   * Changed support OS (fedora and ubuntu) and updated tool - #67
