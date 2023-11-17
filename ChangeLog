@@ -1,3 +1,9 @@
+k2htpdtor (1.0.44) unstable; urgency=low
+
+  * Updated build_helper.sh for fixing a bug and installing ruby - #71
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 17 Nov 2023 15:05:24 +0900
+
 k2htpdtor (1.0.43) unstable; urgency=low
 
   * Fixed typo in ChangeLog file - #69
