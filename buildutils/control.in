@@ -2,7 +2,7 @@ Source: @PACKAGE_NAME@
 Section: libs
 Priority: optional
 Maintainer: @DEV_NAME@ <@DEV_EMAIL@>
-Build-Depends: @DEBHELPER_DEP@, k2hash-dev (>= 1.0.90), libfullock-dev (>= 1.0.55), chmpx-dev (>= 1.0.103), libyaml-dev, gnutls-dev
+Build-Depends: @DEBHELPER_DEP@, k2hash-dev (>= 1.0.92), libfullock-dev (>= 1.0.57), chmpx-dev (>= 1.0.104), libyaml-dev, gnutls-dev
 Depends: ${misc:Depends}
 Standards-Version: 3.9.8
 Homepage: https://@GIT_DOMAIN@/@GIT_ORG@/@GIT_REPO@
@@ -12,6 +12,6 @@ Vcs-Browser: https://@GIT_DOMAIN@/@GIT_ORG@/@GIT_REPO@
 Package: @PACKAGE_NAME@
 Section: libs
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, k2hash (>= 1.0.90), libfullock (>= 1.0.55), chmpx (>= 1.0.103)
+Depends: ${shlibs:Depends}, ${misc:Depends}, k2hash (>= 1.0.92), libfullock (>= 1.0.57), chmpx (>= 1.0.104)
 Description: @SHORTDESC@
 @DEBLONGDESC@
