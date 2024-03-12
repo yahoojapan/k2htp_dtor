@@ -59,7 +59,7 @@ inline void free_dtorpbylst(dtorpbylst_t& pbylst)
 	}
 }
 
-inline bool find_dtorpbylst(dtorpbylst_t& pbylst, const unsigned char* pbin, size_t length)
+inline bool find_dtorpbylst(const dtorpbylst_t& pbylst, const unsigned char* pbin, size_t length)
 {
 	if(!pbin || 0 == length){
 		return false;
