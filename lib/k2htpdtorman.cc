@@ -300,6 +300,8 @@ void* K2HtpDtorManager::WorkerThread(void* param)
 			}
 			// catch event
 			for(int cnt = 0; cnt < eventcnt; cnt++){
+				// cppcheck-suppress unmatchedSuppression
+				// cppcheck-suppress knownConditionTrueFalse
 				if(!pDtorMan->CheckWatch(events[cnt].data.fd)){
 					ERR_K2HPRN("Something error occurred in checking epoll event, but continue...");
 				}
@@ -348,6 +350,8 @@ bool K2HtpDtorManager::ReadIniFileContents(const char* filepath, dtorstrlst_t& l
 				// found include.
 				bool	found_same_file = false;
 				for(dtorstrlst_t::const_iterator iter = allfiles.begin(); iter != allfiles.end(); ++iter){
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress useStlAlgorithm
 					if(value == (*iter)){
 						found_same_file = true;
 						break;
@@ -475,6 +479,8 @@ bool K2HtpDtorManager::LoadConfigurationIni(const char* filepath, string& chmpxc
 
 			}else if(line == INICFG_K2HTPDTOR_FILTER_STR){
 				// set except types
+				// cppcheck-suppress unmatchedSuppression
+				// cppcheck-suppress knownConditionTrueFalse
 				if(!parse_except_types(value.c_str(), excepttypes)){
 					WAN_K2HPRN("could not load except transaction type(%s) by %s key.", value.c_str(), line.c_str());
 					excepttypes.clear();
@@ -829,6 +835,8 @@ bool K2HtpDtorManager::LoadConfigurationYamlContents(yaml_parser_t& yparser, str
 
 				}else if(0 == strcasecmp(INICFG_K2HTPDTOR_FILTER_STR, key.c_str())){
 					// set except types
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress knownConditionTrueFalse
 					if(!parse_except_types(reinterpret_cast<const char*>(yevent.data.scalar.value), excepttypes)){
 						WAN_K2HPRN("could not load except transaction type(%s) by %s key.", reinterpret_cast<const char*>(yevent.data.scalar.value), key.c_str());
 						excepttypes.clear();
@@ -1185,7 +1193,9 @@ bool K2HtpDtorManager::CheckWatch(int inotifyfd)
 	//
 	string	tgfile;
 	for(dtorlist_t::iterator iter = dtorlist.begin(); iter != dtorlist.end(); ++iter){
-		PDTORINFO	pdtor = *iter;
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress constVariablePointer
+		const PDTORINFO	pdtor = *iter;
 		if(pdtor && pdtor->inotify_fd == inotifyfd){
 			tgfile = pdtor->outputfile;
 			break;
@@ -1289,7 +1299,9 @@ bool K2HtpDtorManager::IsExceptKey(k2h_h k2hhandle, const unsigned char* pkey, s
 	if(dtormap.end() == dtormap.find(k2hhandle)){
 		ERR_K2HPRN("K2HTPDTOR does not have k2hash handle(0x%016" PRIx64 ") mapping.", k2hhandle);
 	}else{
-		PDTORINFO	pdtor	= dtormap[k2hhandle];
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress constVariablePointer
+		const PDTORINFO	pdtor	= dtormap[k2hhandle];
 		if(pdtor){
 			result = find_dtorpbylst(pdtor->excepts, pkey, length);
 		}

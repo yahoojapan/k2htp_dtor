@@ -226,6 +226,8 @@ void* K2htpSvrFd::WorkerThread(void* param)
 				// check removing/moving file
 				if(K2htpSvrFd::CheckInotifyEvents(events[cnt].data.fd, pSvrFdObj)){
 					// close fd
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress knownConditionTrueFalse
 					if(!pSvrFdObj->Close()){
 						ERR_K2HPRN("Failed to close file(%s), but continue...", pSvrFdObj->filepath.c_str());
 					}
@@ -276,6 +278,8 @@ K2htpSvrFd::~K2htpSvrFd(void)
 		ERR_K2HPRN("Could not stop thread, but continue...");
 	}
 	// close file
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress knownConditionTrueFalse
 	if(!Close()){
 		ERR_K2HPRN("Could not close file, but continue...");
 	}
@@ -284,6 +288,8 @@ K2htpSvrFd::~K2htpSvrFd(void)
 bool K2htpSvrFd::Initialize(const char* path)
 {
 	// open file
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress knownConditionTrueFalse
 	if(!Close() || !Open(path)){
 		ERR_K2HPRN("Could not initialize about file(%s).", path);
 		return false;

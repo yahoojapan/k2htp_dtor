@@ -52,8 +52,8 @@ License: @PKGLICENSE@
 @RPMPKG_GROUP@
 URL: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@
 Source0: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@/archive/%{gittag}/%{name}-%{version}.tar.gz
-Requires: libfullock%{?_isa} >= 1.0.57, k2hash%{?_isa} >= 1.0.92, chmpx%{?_isa} >= 1.0.104
-BuildRequires: git-core gcc-c++ make libtool libfullock-devel >= 1.0.57, k2hash-devel >= 1.0.92, chmpx-devel >= 1.0.104, libyaml-devel, nss-devel
+Requires: libfullock%{?_isa} >= 1.0.59, k2hash%{?_isa} >= 1.0.93, chmpx%{?_isa} >= 1.0.105
+BuildRequires: git-core gcc-c++ make libtool libfullock-devel >= 1.0.59, k2hash-devel >= 1.0.93, chmpx-devel >= 1.0.105, libyaml-devel, nss-devel
 
 %description
 @LONGDESC@
