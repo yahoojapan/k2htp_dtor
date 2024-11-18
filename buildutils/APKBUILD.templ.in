@@ -50,7 +50,10 @@ url="https://k2htpdtor.antpick.ax/"
 arch="x86_64"
 license="MIT"
 
-depends=""
+depends="
+	procps
+	chmpx
+"
 depends_dev="
 	chmpx-dev
 "
@@ -62,8 +65,8 @@ makedepends="
 	groff
 	util-linux-misc
 	musl-locales
-	procps
 	yaml-dev
+	chmpx-dev
 	openssl-dev
 "
 
