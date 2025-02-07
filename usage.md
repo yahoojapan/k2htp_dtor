@@ -82,28 +82,40 @@ The **K2HTPDTOR** publishes [packages](https://packagecloud.io/app/antpickax/sta
 The package of the **K2HTPDTOR** is released in the form of Debian package, RPM package.  
 Since the installation method differs depending on your OS, please check the following procedure and install it.  
 
-##### For recent Debian-based Linux distributions users, follow the steps below:
+##### For Debian-based Linux distributions users, follow the steps below:
 ```
 $ sudo apt-get update -y
 $ sudo apt-get install curl -y
 $ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.deb.sh | sudo bash
 $ sudo apt-get install k2htpdtor chmpx
 ```
+To install the developer package, please install the following package.
+```
+$ sudo apt-get install k2htpdtor-dev
+```
 
-##### For users who use supported Fedora other than latest version, follow the steps below:
+##### For RPM-based Linux distributions users, follow the steps below:
 ```
 $ sudo dnf makecache
 $ sudo dnf install curl -y
 $ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh | sudo bash
 $ sudo dnf install k2htpdtor chmpx
 ```
-
-##### For other recent RPM-based Linux distributions users, follow the steps below:
+To install the developer package, please install the following package.
 ```
-$ sudo yum makecache
-$ sudo yum install curl -y
-$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh | sudo bash
-$ sudo yum install k2htpdtor chmpx
+$ sudo dnf install k2htpdtor-devel
+```
+
+##### For ALPINE-based Linux distributions users, follow the steps below:
+```
+# apk update
+# apk add curl
+# curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.alpine.sh | sh
+# apk add k2htpdtor
+```
+To install the developer package, please install the following package.
+```
+# apk add k2htpdtor-dev
 ```
 
 ##### Other OS
