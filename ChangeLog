@@ -1,3 +1,9 @@
+k2htpdtor (1.0.51) unstable; urgency=low
+
+  * Fixed APKBUILD.templ.in for alpine v3.23 - #86
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 17 Apr 2026 09:25:50 +0900
+
 k2htpdtor (1.0.50) unstable; urgency=low
 
   * Changed support OS and Fixed some code - #84
