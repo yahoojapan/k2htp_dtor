@@ -96,8 +96,8 @@ unpack() {
 	# In this case, change the directory name to the package name
 	# (k2htpdtor) instead of the repository name.
 	#
-	if [ -d "$_repository_name-$pkgver" ]; then
-		mv "$_repository_name-$pkgver" "$pkgname-$pkgver"
+	if [ -d "$srcdir/$_repository_name-$pkgver" ]; then
+		mv "$srcdir/$_repository_name-$pkgver" "$srcdir/$pkgname-$pkgver"
 	fi
 }
 
