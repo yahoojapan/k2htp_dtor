@@ -41,6 +41,8 @@
 %global run_autogen echo "skip autogen.sh"
 %endif
 
+%global major_version %{lua: print(string.match("@VERSION@", "^%d+"))}
+
 #
 # main package
 #
@@ -86,7 +88,7 @@ mkdir -p %{buildroot}/var/lib/antpickax
 %files
 %license COPYING
 %doc README AUTHORS ChangeLog
-%{_libdir}/*.so.*
+%{_libdir}/*.so.%{major_version}*
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_bindir}/*
