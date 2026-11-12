@@ -136,7 +136,7 @@ static bool ParamParser(int argc, char** argv, dtorparam_t& params)
 				fprintf(stderr, "[ERROR] Already set -conf option, option %s could not be specified with -conf.\n", argv[cnt]);
 				return false;
 			}
-			is_json_opt		= false;
+			is_json_opt		= true;
 			params["json"]	= argv[++cnt];
 
 		}else if(0 == strcasecmp(argv[cnt], "-d")){
