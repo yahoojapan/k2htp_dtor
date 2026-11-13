@@ -1,3 +1,10 @@
+k2htpdtor (1.0.53) unstable; urgency=low
+
+  * Strengthened variable checks and fixed bugs - #91
+  * Changed support OSes and fixed files - #90
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 13 Nov 2026 18:58:33 +0900
+
 k2htpdtor (1.0.52) unstable; urgency=low
 
   * Supports Alpine 3.24, manual trigger for GHA, and fix codes - #88
