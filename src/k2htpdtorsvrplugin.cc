@@ -396,7 +396,7 @@ bool K2htpSvrPlugin::StopWatchThread(void)
 	return true;
 }
 
-bool K2htpSvrPlugin::BuildNamedPipeFile(bool keep_exist)
+bool K2htpSvrPlugin::BuildNamedPipeFile(bool keep_exist, ino_t* pInode, dev_t* pDevice)
 {
 	static bool		stc_init_basedir = false;
 	static string	stc_basedir;
@@ -426,10 +426,21 @@ bool K2htpSvrPlugin::BuildNamedPipeFile(bool keep_exist)
 
 	// check file
 	struct stat	st;
-	if(0 == stat(PipeFilePath.c_str(), &st)){
-		if(keep_exist && S_ISFIFO(st.st_mode)){
+	if(0 == lstat(PipeFilePath.c_str(), &st)){
+		if(keep_exist && S_ISFIFO(st.st_mode) && st.st_uid == geteuid()){
 			MSG_K2HPRN("Named pipe file(%s) already exists, so keep it.", PipeFilePath.c_str());
+
+			if(pInode){
+				*pInode = st.st_ino;
+			}
+			if(pDevice){
+				*pDevice = st.st_dev;
+			}
 			return true;
+		}
+		if(!S_ISFIFO(st.st_mode) || st.st_uid != geteuid()){
+			ERR_K2HPRN("The file(%s) is found, but it is not Named pipe or symbolic link file. So could not remove it.", PipeFilePath.c_str());
+			return false;
 		}
 		if(0 != unlink(PipeFilePath.c_str())){
 			ERR_K2HPRN("Named pipe file(%s) exists, but remove(initiate) it. errno(%d)", PipeFilePath.c_str(), errno);
@@ -442,6 +453,22 @@ bool K2htpSvrPlugin::BuildNamedPipeFile(bool keep_exist)
 		ERR_K2HPRN("could not make named pipe(%s) by errno(%d).", PipeFilePath.c_str(), errno);
 		return false;
 	}
+	// re-check file and set inode/device
+	if(0 != lstat(PipeFilePath.c_str(), &st)){
+		ERR_K2HPRN("could not make named pipe(%s).", PipeFilePath.c_str());
+		return false;
+	}
+	if(!S_ISFIFO(st.st_mode) || st.st_uid != geteuid()){
+		ERR_K2HPRN("The file(%s) is not Named pipe or not my uid.", PipeFilePath.c_str());
+	    return false;
+	}
+	if(pInode){
+		*pInode = st.st_ino;
+	}
+	if(pDevice){
+		*pDevice = st.st_dev;
+	}
+
 	return true;
 }
 
@@ -453,9 +480,13 @@ bool K2htpSvrPlugin::RemoveNamedPipeFile(void)
 	}
 
 	struct stat	st;
-	if(0 != stat(PipeFilePath.c_str(), &st)){
+	if(0 != lstat(PipeFilePath.c_str(), &st)){
 		MSG_K2HPRN("Named pipe file(%s) does not exist.", PipeFilePath.c_str());
 		return true;
+	}
+	if(!S_ISFIFO(st.st_mode) || st.st_uid != geteuid()){
+		ERR_K2HPRN("The file(%s) is not Named pipe or symbolic link file.", PipeFilePath.c_str());
+		return false;
 	}
 	if(0 != unlink(PipeFilePath.c_str())){
 		ERR_K2HPRN("Named pipe file(%s) exists, but remove(initiate) it. errno(%d)", PipeFilePath.c_str(), errno);
@@ -481,7 +512,9 @@ bool K2htpSvrPlugin::RunPlugin(void)
 	}
 
 	// build named pipe(if it exists, do not remove it.)
-	if(!BuildNamedPipeFile(true)){
+	ino_t	pipe_ino = 0;
+	dev_t	pipe_dev = 0;
+	if(!BuildNamedPipeFile(true, &pipe_ino, &pipe_dev)){
 		ERR_K2HPRN("Could not build named pipe file.");
 		fullock::flck_unlock_noshared_mutex(&lockval);		// MUTEX UNLOCK
 		return false;
@@ -504,17 +537,46 @@ bool K2htpSvrPlugin::RunPlugin(void)
 		int	child_input_pipe;
 		{
 			// open READ mode with nonblocking
-			if(-1 == (child_input_pipe = open(PipeFilePath.c_str(), O_RDONLY | O_NONBLOCK))){
+			if(-1 == (child_input_pipe = open(PipeFilePath.c_str(), O_RDONLY | O_NONBLOCK | O_NOFOLLOW))){
 				ERR_K2HPRN("Could not open read(non blocking) only named pipe(%s) by errno(%d).", PipeFilePath.c_str(), errno);
 				exit(EXIT_FAILURE);
 			}
+
+			// check permission and etc
+			struct stat	st;
+			if(0 != fstat(child_input_pipe, &st)){
+				ERR_K2HPRN("Could not open read(non blocking) only named pipe(%s) by errno(%d).", PipeFilePath.c_str(), errno);
+				K2H_CLOSE(child_input_pipe);
+				exit(EXIT_FAILURE);
+			}
+			if(!S_ISFIFO(st.st_mode) || st.st_uid != geteuid() || st.st_ino != pipe_ino || st.st_dev != pipe_dev){
+				ERR_K2HPRN("The file(%s) is not Named pipe or not my uid or not same file.", PipeFilePath.c_str());
+				K2H_CLOSE(child_input_pipe);
+				exit(EXIT_FAILURE);
+			}
+
 			// open WRITE with blocking(never use and close this)
 			int	child_wr_pipe;
-			if(-1 == (child_wr_pipe = open(PipeFilePath.c_str(), O_WRONLY))){
+			if(-1 == (child_wr_pipe = open(PipeFilePath.c_str(), O_WRONLY | O_NOFOLLOW))){
 				ERR_K2HPRN("Could not open write only named pipe(%s) by errno(%d).", PipeFilePath.c_str(), errno);
 				K2H_CLOSE(child_input_pipe);
 				exit(EXIT_FAILURE);
 			}
+
+			// check permission and etc
+			if(0 != fstat(child_wr_pipe, &st)){
+				ERR_K2HPRN("Could not open write only named pipe(%s) by errno(%d).", PipeFilePath.c_str(), errno);
+				K2H_CLOSE(child_input_pipe);
+				K2H_CLOSE(child_wr_pipe);
+				exit(EXIT_FAILURE);
+			}
+			if(!S_ISFIFO(st.st_mode) || st.st_uid != geteuid() || st.st_ino != pipe_ino || st.st_dev != pipe_dev){
+				ERR_K2HPRN("The file(%s) is not Named pipe or not my uid or not same file.", PipeFilePath.c_str());
+				K2H_CLOSE(child_input_pipe);
+				K2H_CLOSE(child_wr_pipe);
+				exit(EXIT_FAILURE);
+			}
+
 			// set blocking mode to READ pipe
 			if(!K2htpSvrPlugin::ClearFdFlags(child_input_pipe, O_NONBLOCK)){
 				ERR_K2HPRN("Could not unset blocking to readable named pipe(%s).", PipeFilePath.c_str());
