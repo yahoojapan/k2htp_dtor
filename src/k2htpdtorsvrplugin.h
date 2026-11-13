@@ -51,7 +51,7 @@ class K2htpSvrPlugin
 		bool ParseExecParam(const char* base);
 		bool RunWatchThread(void);
 		bool StopWatchThread(void);
-		bool BuildNamedPipeFile(bool keep_exist);
+		bool BuildNamedPipeFile(bool keep_exist, ino_t* pInode = NULL, dev_t* pDevice = NULL);
 		bool RemoveNamedPipeFile(void);
 		bool RunPlugin(void);
 		bool StopPlugin(void);

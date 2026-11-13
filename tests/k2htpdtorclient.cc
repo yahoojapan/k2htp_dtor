@@ -240,6 +240,9 @@ int main(int argc, char** argv)
 	k2hash.Detach(60 * 1000);		// wait max 60s
 	cout << "Finished." << endl;
 
+	// wait for k2htpdtor
+	sleep(10);
+
 	exit(EXIT_SUCCESS);
 }
 

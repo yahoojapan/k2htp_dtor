@@ -52,6 +52,20 @@ using namespace std;
 #define	TOPLUGIN_FORM_4PARAM						"4 %zu %zu %zu %zu "
 
 //---------------------------------------------------------
+// Utility Macro
+//---------------------------------------------------------
+#define	SAFE_RECEIVE_BCOM(pBinCom, totallength)				\
+		(	pBinCom											&& \
+			totallength	>= sizeof(BCOM)						&& \
+			totallength == scom_total_length(pBinCom->scom)	&& \
+			(0<= pBinCom->scom.key_pos		&& static_cast<size_t>(pBinCom->scom.key_pos	+ pBinCom->scom.key_length)		<= totallength)	&& \
+			(0<= pBinCom->scom.val_pos		&& static_cast<size_t>(pBinCom->scom.val_pos	+ pBinCom->scom.val_length)		<= totallength)	&& \
+			(0<= pBinCom->scom.skey_pos		&& static_cast<size_t>(pBinCom->scom.skey_pos	+ pBinCom->scom.skey_length)	<= totallength)	&& \
+			(0<= pBinCom->scom.attrs_pos	&& static_cast<size_t>(pBinCom->scom.attrs_pos	+ pBinCom->scom.attr_length)	<= totallength)	&& \
+			(0<= pBinCom->scom.exdata_pos	&& static_cast<size_t>(pBinCom->scom.exdata_pos	+ pBinCom->scom.exdata_length)	<= totallength) \
+		)
+
+//---------------------------------------------------------
 // local data
 //---------------------------------------------------------
 static const unsigned char	byTerminate[] = {0x0A};		// \n
@@ -128,6 +142,7 @@ bool K2HtpSvrManager::Clean(void)
 			}
 		}
 	}
+
 	return result;
 }
 
@@ -250,13 +265,12 @@ bool K2HtpSvrManager::Processing(void)
 
 		// check received data
 		PBCOM	pBinCom = reinterpret_cast<PBCOM>(pbody);
-		if(length != scom_total_length(pBinCom->scom)){
-			ERR_K2HPRN("Length(%zu) of received message body is wrong(should be %zu).", length, scom_total_length(pBinCom->scom));
+		if(!SAFE_RECEIVE_BCOM(pBinCom, length)){
+			ERR_K2HPRN("Length(%zu) of received message, but total length(should be %zu) or BCOM member(position and length) wrong.", length, scom_total_length(pBinCom->scom));
 			CHM_Free(pComPkt);
 			CHM_Free(pbody);
 			continue;
 		}
-
 		// check received data type
 		if(pBinCom->scom.type < SCOM_TYPE_MIN || SCOM_TYPE_MAX < pBinCom->scom.type){
 			ERR_K2HPRN("BCom data type(%ld: %s) is unknown.", pBinCom->scom.type, pBinCom->scom.szCommand);
