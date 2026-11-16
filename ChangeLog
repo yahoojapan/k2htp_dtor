@@ -1,3 +1,9 @@
+k2htpdtor (1.0.54) unstable; urgency=low
+
+  * Add strict variable checks in alpine_build.sh - #93
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 16 Nov 2026 21:19:41 +0900
+
 k2htpdtor (1.0.53) unstable; urgency=low
 
   * Strengthened variable checks and fixed bugs - #91
